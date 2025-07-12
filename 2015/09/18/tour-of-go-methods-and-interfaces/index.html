@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Tour of Go - Methods and interfaces | CODE FARM</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Tour of Go - Methods and interfaces" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="All animals are equal but some animals are more equal than others." />
+<meta property="og:description" content="All animals are equal but some animals are more equal than others." />
+<link rel="canonical" href="https://blog.codefarm.me/2015/09/18/tour-of-go-methods-and-interfaces/" />
+<meta property="og:url" content="https://blog.codefarm.me/2015/09/18/tour-of-go-methods-and-interfaces/" />
+<meta property="og:site_name" content="CODE FARM" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-09-18T19:41:03+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Tour of Go - Methods and interfaces" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2015-09-18T19:41:03+08:00","datePublished":"2015-09-18T19:41:03+08:00","description":"All animals are equal but some animals are more equal than others.","headline":"Tour of Go - Methods and interfaces","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.codefarm.me/2015/09/18/tour-of-go-methods-and-interfaces/"},"url":"https://blog.codefarm.me/2015/09/18/tour-of-go-methods-and-interfaces/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css"><!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SN88FJ18E5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-SN88FJ18E5');
+    </script></head>
+  <body>
+    <header class="c-header">
+  <div class="o-container">
+    <a class="c-header-title" href="/">CODE FARM</a>
+    <button class="c-header-nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+      <span class="c-header-nav-toggle-icon"></span>
+    </button>
+    <div class="c-header-nav-wrapper" id="nav-wrapper">
+      <nav class="c-header-nav">
+        <a href="/">Home</a>
+        <a href="/categories/">Category</a>
+        <a href="/tags/">Tag</a>
+        <a href="/archives/">Archive</a>
+        <a href="/about/">About</a>
+        <a href="https://resume.github.io/?looogos" target="_blank">R&eacute;sum&eacute;</a>
+      </nav>
+    </div>
+  </div>
+  <div class="o-container">
+  <div class="c-banner">
+    <img src="/assets/images/galaxy.svg" alt="Galaxy background" class="c-banner-bg">
+  </div>
+</div>
+</header>
+
+    <main class="o-container">
+      <article class="c-post">
+  <header class="c-post-header">
+    <h1 class="c-post-title">Tour of Go - Methods and interfaces</h1><p class="c-post-meta">18 Sep 2015</p>
+  </header>
+
+  <div class="c-post-content">
+    <h2 id="methods-and-interfaces">Methods and interfaces</h2>
+
+<h3 id="methods">Methods</h3>
+
+<p>Go does not have classes. However, you can define methods on struct types.</p>
+
+<p>The method receiver appears in its own argument list between the <code class="language-plaintext highlighter-rouge">func</code> keyword and the method name.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"math"</span>
+<span class="p">)</span>
+
+<span class="k">type</span> <span class="n">Vertex</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="kt">float64</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="p">(</span><span class="n">v</span> <span class="o">*</span><span class="n">Vertex</span><span class="p">)</span> <span class="n">Abs</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">Sqrt</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">X</span><span class="o">*</span><span class="n">v</span><span class="o">.</span><span class="n">X</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">Y</span><span class="o">*</span><span class="n">v</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">v</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="n">Vertex</span><span class="p">{</span><span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">}</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">Abs</span><span class="p">())</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="methods-continued">Methods continued</h3>
+
+<p>You can declare a method on any type that is declared in your package, not just struct types.</p>
+
+<p>However, you cannot define a method on a type from another package (including built in types).</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"math"</span>
+<span class="p">)</span>
+
+<span class="k">type</span> <span class="n">MyFloat</span> <span class="kt">float64</span>
+
+<span class="k">func</span> <span class="p">(</span><span class="n">f</span> <span class="n">MyFloat</span><span class="p">)</span> <span class="n">Abs</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="n">f</span> <span class="o">&lt;</span> <span class="m">0</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kt">float64</span><span class="p">(</span><span class="o">-</span><span class="n">f</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="kt">float64</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">f</span> <span class="o">:=</span> <span class="n">MyFloat</span><span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">Sqrt2</span><span class="p">)</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">Abs</span><span class="p">())</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%T,%v"</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="methods-with-pointer-receivers">Methods with pointer receivers</h3>
+
+<p>Methods can be associated with a named type or a pointer to a named type.</p>
+
+<p>We just saw two Abs methods. One on the <code class="language-plaintext highlighter-rouge">*Vertex</code> pointer type and the other on the <code class="language-plaintext highlighter-rouge">MyFloat</code> value type.</p>
+
+<p>There are two reasons to use a pointer receiver. First, to avoid copying the value on each method call (more efficient if the value type is a large struct). Second, so that the method can modify the value that its receiver points to.</p>
+
+<p>Try changing the declarations of the <code class="language-plaintext highlighter-rouge">Abs</code> and <code class="language-plaintext highlighter-rouge">Scale</code> methods to use <code class="language-plaintext highlighter-rouge">Vertex</code> as the receiver, instead of <code class="language-plaintext highlighter-rouge">*Vertex</code>.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">Scale</code> method has no effect when <code class="language-plaintext highlighter-rouge">v</code> is a <code class="language-plaintext highlighter-rouge">Vertex</code>. <code class="language-plaintext highlighter-rouge">Scale</code> mutates <code class="language-plaintext highlighter-rouge">v</code>. When <code class="language-plaintext highlighter-rouge">v</code> is a value (non-pointer) type, the method sees a copy of the <code class="language-plaintext highlighter-rouge">Vertex</code> and cannot mutate the original value.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Abs</code> works either way. It only reads <code class="language-plaintext highlighter-rouge">v</code>. It doesn’t matter whether it is reading the original value (through a pointer) or a copy of that value.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"math"</span>
+<span class="p">)</span>
+
+<span class="k">type</span> <span class="n">Vertex</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="kt">float64</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="p">(</span><span class="n">v</span> <span class="o">*</span><span class="n">Vertex</span><span class="p">)</span> <span class="n">Scale</span><span class="p">(</span><span class="n">f</span> <span class="kt">float64</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">v</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">X</span> <span class="o">*</span> <span class="n">f</span>
+	<span class="n">v</span><span class="o">.</span><span class="n">Y</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">Y</span> <span class="o">*</span> <span class="n">f</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="p">(</span><span class="n">v</span> <span class="o">*</span><span class="n">Vertex</span><span class="p">)</span> <span class="n">Abs</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">Sqrt</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">X</span><span class="o">*</span><span class="n">v</span><span class="o">.</span><span class="n">X</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">Y</span><span class="o">*</span><span class="n">v</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">v</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="n">Vertex</span><span class="p">{</span><span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">}</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"Before scaling: %+v, Abs: %v</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">Abs</span><span class="p">())</span>
+	<span class="n">v</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="m">5</span><span class="p">)</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"After scaling: %+v, Abs: %v</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">Abs</span><span class="p">())</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="interfaces">Interfaces</h3>
+
+<p>An interface type is defined by a set of methods.</p>
+
+<p>A value of interface type can hold any value that implements those methods.</p>
+
+<p><strong>Note</strong>: There is an error in the example code on line 22. <code class="language-plaintext highlighter-rouge">Vertex</code> (the value type) doesn’t satisfy <code class="language-plaintext highlighter-rouge">Abser</code> because the <code class="language-plaintext highlighter-rouge">Abs</code> method is defined only on <code class="language-plaintext highlighter-rouge">*Vertex</code> (the pointer type).</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"math"</span>
+<span class="p">)</span>
+
+<span class="k">type</span> <span class="n">Abser</span> <span class="k">interface</span> <span class="p">{</span>
+	<span class="n">Abs</span><span class="p">()</span> <span class="kt">float64</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">a</span> <span class="n">Abser</span>
+	<span class="n">f</span> <span class="o">:=</span> <span class="n">MyFloat</span><span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">Sqrt2</span><span class="p">)</span>
+	<span class="n">v</span> <span class="o">:=</span> <span class="n">Vertex</span><span class="p">{</span><span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">}</span>
+
+	<span class="n">a</span> <span class="o">=</span> <span class="n">f</span>  <span class="c">// a MyFloat implements Abser</span>
+	<span class="n">a</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">v</span> <span class="c">// a *Vertex implements Abser</span>
+
+	<span class="c">// In the following line, v is a Vertex (not *Vertex)</span>
+	<span class="c">// and does NOT implement Abser.</span>
+	<span class="c">// a = v</span>
+
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">Abs</span><span class="p">())</span>
+<span class="p">}</span>
+
+<span class="k">type</span> <span class="n">MyFloat</span> <span class="kt">float64</span>
+
+<span class="k">func</span> <span class="p">(</span><span class="n">f</span> <span class="n">MyFloat</span><span class="p">)</span> <span class="n">Abs</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="n">f</span> <span class="o">&lt;</span> <span class="m">0</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kt">float64</span><span class="p">(</span><span class="o">-</span><span class="n">f</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="kt">float64</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">type</span> <span class="n">Vertex</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="kt">float64</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="p">(</span><span class="n">v</span> <span class="o">*</span><span class="n">Vertex</span><span class="p">)</span> <span class="n">Abs</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">Sqrt</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">X</span><span class="o">*</span><span class="n">v</span><span class="o">.</span><span class="n">X</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">Y</span><span class="o">*</span><span class="n">v</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="interfaces-are-satisfied-implicitly">Interfaces are satisfied implicitly</h3>
+
+<p>A type implements an interface by implementing the methods. There is no explicit declaration of intent; no “implements” keyword.</p>
+
+<p>Implicit interfaces decouple implementation packages from the packages that define the interfaces: neither depends on the other.</p>
+
+<p>It also encourages the definition of precise interfaces, because you don’t have to find every implementation and tag it with the new interface name.</p>
+
+<p><a href="http://golang.org/pkg/io/">Package io</a> defines <code class="language-plaintext highlighter-rouge">Reader</code> and <code class="language-plaintext highlighter-rouge">Writer</code>; you don’t have to.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"os"</span>
+<span class="p">)</span>
+
+<span class="k">type</span> <span class="n">Reader</span> <span class="k">interface</span> <span class="p">{</span>
+	<span class="n">Read</span><span class="p">(</span><span class="n">b</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="n">n</span> <span class="kt">int</span><span class="p">,</span> <span class="n">err</span> <span class="kt">error</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">type</span> <span class="n">Writer</span> <span class="k">interface</span> <span class="p">{</span>
+	<span class="n">Write</span><span class="p">(</span><span class="n">b</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="n">n</span> <span class="kt">int</span><span class="p">,</span> <span class="n">err</span> <span class="kt">error</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">type</span> <span class="n">ReadWriter</span> <span class="k">interface</span> <span class="p">{</span>
+	<span class="n">Reader</span>
+	<span class="n">Writer</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">w</span> <span class="n">Writer</span>
+
+	<span class="c">// os.Stdout implements Writer</span>
+	<span class="n">w</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">Stdout</span>
+
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Fprintf</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">"hello, writer</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="stringers">Stringers</h3>
+
+<p>One of the most ubiquitous interfaces is <code class="language-plaintext highlighter-rouge">Stringer</code> defined by the <code class="language-plaintext highlighter-rouge">fmt</code> package.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type Stringer interface {
+    String() string
+}
+</code></pre></div></div>
+
+<p>A <code class="language-plaintext highlighter-rouge">Stringer</code> is a type that can describe itself as a string. The <code class="language-plaintext highlighter-rouge">fmt</code> package (and many others) look for this interface to print values.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">type</span> <span class="n">Person</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">Name</span> <span class="kt">string</span>
+	<span class="n">Age</span>  <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="p">(</span><span class="n">p</span> <span class="n">Person</span><span class="p">)</span> <span class="n">String</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="n">fmt</span><span class="o">.</span><span class="n">Sprintf</span><span class="p">(</span><span class="s">"%v (%v years)"</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">Name</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">Age</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">a</span> <span class="o">:=</span> <span class="n">Person</span><span class="p">{</span><span class="s">"Arthur Dent"</span><span class="p">,</span> <span class="m">42</span><span class="p">}</span>
+	<span class="n">z</span> <span class="o">:=</span> <span class="n">Person</span><span class="p">{</span><span class="s">"Zaphod Beeblebrox"</span><span class="p">,</span> <span class="m">9001</span><span class="p">}</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="errors">Errors</h3>
+
+<p>Go programs express error state with error values.</p>
+
+<p>The error type is a built-in interface similar to <code class="language-plaintext highlighter-rouge">fmt.Stringer</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type error interface {
+    Error() string
+}
+</code></pre></div></div>
+
+<p>(As with <code class="language-plaintext highlighter-rouge">fmt.Stringer</code>, the <code class="language-plaintext highlighter-rouge">fmt</code> package looks for the <code class="language-plaintext highlighter-rouge">error</code> interface when printing values.)</p>
+
+<p>Functions often return an <code class="language-plaintext highlighter-rouge">error</code> value, and calling code should handle errors by testing whether the error equals <code class="language-plaintext highlighter-rouge">nil</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>i, err := strconv.Atoi("42")
+if err != nil {
+    fmt.Printf("couldn't convert number: %v\n", err)
+}
+fmt.Println("Converted integer:", i)
+</code></pre></div></div>
+
+<p>A nil <code class="language-plaintext highlighter-rouge">error</code> denotes success; a non-nil error denotes failure.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"time"</span>
+<span class="p">)</span>
+
+<span class="k">type</span> <span class="n">MyError</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">When</span> <span class="n">time</span><span class="o">.</span><span class="n">Time</span>
+	<span class="n">What</span> <span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="p">(</span><span class="n">e</span> <span class="o">*</span><span class="n">MyError</span><span class="p">)</span> <span class="n">Error</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="n">fmt</span><span class="o">.</span><span class="n">Sprintf</span><span class="p">(</span><span class="s">"at %v, %s"</span><span class="p">,</span>
+		<span class="n">e</span><span class="o">.</span><span class="n">When</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">What</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">run</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="n">MyError</span><span class="p">{</span>
+		<span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">(),</span>
+		<span class="s">"it didn't work"</span><span class="p">,</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">run</span><span class="p">();</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="readers">Readers</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">io</code> package specifies the <code class="language-plaintext highlighter-rouge">io.Reader</code> interface, which represents the read end of a stream of data.</p>
+
+<p>The Go standard library contains <a href="http://golang.org/search?q=Read#Global">many implementations</a> of these interfaces, including files, network connections, compressors, ciphers, and others.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">io.Reader</code> interface has a <code class="language-plaintext highlighter-rouge">Read</code> method:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>func (T) Read(b []byte) (n int, err error)
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Read</code> populates the given byte slice with data and returns the number of bytes populated and an error value. It returns an <code class="language-plaintext highlighter-rouge">io.EOF</code> error when the stream ends.</p>
+
+<p>The example code creates a <code class="language-plaintext highlighter-rouge">strings.Reader</code>. and consumes its output 8 bytes at a time.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"io"</span>
+	<span class="s">"strings"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">r</span> <span class="o">:=</span> <span class="n">strings</span><span class="o">.</span><span class="n">NewReader</span><span class="p">(</span><span class="s">"Hello, Reader!"</span><span class="p">)</span>
+
+	<span class="n">b</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="m">8</span><span class="p">)</span>
+
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="n">n</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">r</span><span class="o">.</span><span class="n">Read</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"n = %v err = %v b = %v</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"b[:n] = %q</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">b</span><span class="p">[</span><span class="o">:</span><span class="n">n</span><span class="p">])</span>
+		<span class="k">if</span> <span class="n">err</span> <span class="o">==</span> <span class="n">io</span><span class="o">.</span><span class="n">EOF</span> <span class="p">{</span>
+			<span class="k">break</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>#Web servers#</p>
+
+<p><a href="http://golang.org/pkg/net/http/">Package http</a> serves HTTP requests using any value that implements <code class="language-plaintext highlighter-rouge">http.Handler</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>package http
+
+type Handler interface {
+    ServeHTTP(w ResponseWriter, r *Request)
+}
+</code></pre></div></div>
+
+<p>In this example, the type <code class="language-plaintext highlighter-rouge">Hello</code> implements <code class="language-plaintext highlighter-rouge">http.Handler</code>.</p>
+
+<p>Visit <a href="http://localhost:4000/">http://localhost:4000/</a> to see the greeting.</p>
+
+<p><strong>Note</strong>: This example won’t run through the web-based tour user interface. To try writing web servers you may want to <a href="http://golang.org/doc/install/">Install Go</a>.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"log"</span>
+	<span class="s">"net/http"</span>
+<span class="p">)</span>
+
+<span class="k">type</span> <span class="n">Hello</span> <span class="k">struct</span><span class="p">{}</span>
+
+<span class="k">func</span> <span class="p">(</span><span class="n">h</span> <span class="n">Hello</span><span class="p">)</span> <span class="n">ServeHTTP</span><span class="p">(</span>
+	<span class="n">w</span> <span class="n">http</span><span class="o">.</span><span class="n">ResponseWriter</span><span class="p">,</span>
+	<span class="n">r</span> <span class="o">*</span><span class="n">http</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Fprint</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">"Hello"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">h</span> <span class="n">Hello</span>
+	<span class="n">err</span> <span class="o">:=</span> <span class="n">http</span><span class="o">.</span><span class="n">ListenAndServe</span><span class="p">(</span><span class="s">"localhost:4000"</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+		<span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>#Exercise: HTTP Handlers#</p>
+
+<p>Implement the following types and define <code class="language-plaintext highlighter-rouge">ServeHTTP</code> methods on them. Register them to handle specific paths in your web server.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type String string
+
+type Struct struct {
+    Greeting string
+    Punct    string
+    Who      string
+}
+</code></pre></div></div>
+
+<p>For example, you should be able to register handlers using:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http.Handle("/string", String("I'm a frayed knot."))
+http.Handle("/struct", &amp;Struct{"Hello", ":", "Gophers!"})
+</code></pre></div></div>
+
+<p><strong>Note</strong>: This example won’t run through the web-based tour user interface. To try writing web servers you may want to <a href="http://golang.org/doc/install/">Install Go</a>.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"log"</span>
+	<span class="s">"net/http"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="c">// your http.Handle calls here</span>
+	<span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">ListenAndServe</span><span class="p">(</span><span class="s">"localhost:4000"</span><span class="p">,</span> <span class="no">nil</span><span class="p">))</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="images">Images</h3>
+
+<p><a href="http://golang.org/pkg/image/#Image">Package image</a> defines the <code class="language-plaintext highlighter-rouge">Image</code> interface:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>package image
+
+type Image interface {
+    ColorModel() color.Model
+    Bounds() Rectangle
+    At(x, y int) color.Color
+}
+</code></pre></div></div>
+
+<p><strong>Note</strong>: the <code class="language-plaintext highlighter-rouge">Rectangle</code> return value of the <code class="language-plaintext highlighter-rouge">Bounds</code> method is actually an <code class="language-plaintext highlighter-rouge">image.Rectangle</code>, as the declaration is inside package <code class="language-plaintext highlighter-rouge">image</code>.</p>
+
+<p>(See <a href="http://golang.org/pkg/image/#Image">the documentation</a> for all the details.)</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">color.Color</code> and <code class="language-plaintext highlighter-rouge">color.Model</code> types are also interfaces, but we’ll ignore that by using the predefined implementations <code class="language-plaintext highlighter-rouge">color.RGBA</code> and <code class="language-plaintext highlighter-rouge">color.RGBAModel</code>. These interfaces and types are specified by the <a href="http://golang.org/pkg/image/color/">image/color package</a></p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"image"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">m</span> <span class="o">:=</span> <span class="n">image</span><span class="o">.</span><span class="n">NewRGBA</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">100</span><span class="p">,</span> <span class="m">100</span><span class="p">))</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Bounds</span><span class="p">())</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">At</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span><span class="o">.</span><span class="n">RGBA</span><span class="p">())</span>
+<span class="p">}</span></code></pre></figure>
+
+<hr />
+
+<h3 id="references">References</h3>
+
+<ul>
+  <li>Tour of Go,<a href="http://tour.golang.org/">http://tour.golang.org/</a></li>
+</ul>
+
+<style>
+  .utterances {
+      max-width: 100%;
+  }
+</style>
+<script src="https://utteranc.es/client.js"
+        repo="looogos/utterances"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</article>
+    </main>
+    <footer class="c-footer">
+  <div class="c-footer-license">
+    <span>Article licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></span>
+  </div>
+  
+  <details class="c-footer-extralinks" open>
+    <summary class="c-footer-extralinks-summary">Extral Links</summary>
+    <div class="c-footer-extralinks-content">
+      
+      <a href="https://jekyllrb.com/">Jekyll</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://shopify.github.io/">Liquid</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://docs.asciidoctor.org/">Asciidoctor</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://github.com/qqbuby/">GitHub</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="/feed.xml">RSS</a>
+      
+      
+    </div>
+  </details>
+  
+</footer>
+
+    <script src="/assets/js/nav.js" defer></script>
+    <script src="/assets/js/heading-anchors.js" defer></script>
+    <!-- https://cdn.jsdelivr.net/gh/lurongkai/anti-baidu/js/anti-baidu-latest.min.js -->    
+    <script type="text/javascript" src="/js/anti-baidu.min.js" charset="UTF-8"></script>
+  </body>
+</html>
