@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to install Python 2.7 from source on CentOS | CODE FARM</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="How to install Python 2.7 from source on CentOS" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="Show CentOS version $ uname -ri 2.6.18-398.el5 i386 $ cat /etc/*release CentOS release 5.11 (Final) Install “Develement Tools” # yum -y groupinstall &quot;Development Tools&quot; Download Gzipped source tarball # mkdir $HOME/tmp # cd $HOME/tmp # wget https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz # tar xf Python-2.7.11.tgz # cd Python-2.7.11 # ./configure --prefix=/usr/local/python2.7 # make ... Python build finished, but the necessary bits to build these modules were not found: _bsddb _curses _curses_panel _sqlite3 _ssl _tkinter bsddb185 bz2 dbm gdbm readline sunaudiodev zlib To install these modules, bz2 # yum -y install bzip2-devel zlib # yum -y install zlib-devel readline # yum -y install readline-devel _sqlite3 # yum -y install sqlite-devel _tkinter # yum -y install tk-devel _curses _curses_panel # yum -y install ncurses-devel _bsddb # yum -y install db4-devel gdbm # yum -y install gdbm-devel _ssl With dist packages # yum -y install openssl-devel Make with source # wget https://www.openssl.org/source/openssl-1.0.2h.tar.gz # tar xf openssl-1.0.2h.tar.gz # cd openssl-1.0.2h # ./config --prefix=/usr shared # make install Configure &amp; Make install Python-2.7.11 You can also use --enable-shared option to build shared versions of libraries. # cd $HOME/tmp/Python-2.7.11 # ./configure --prefix=/usr/local/python2.7 # make ... Python build finished, but the necessary bits to build these modules were not found: bsddb185 sunaudiodev To find the necessary bits, look in setup.py in detect_modules() for the module&#39;s name. running build_scripts # make install Add /usr/local/python2.7/lib/ to ld.so.conf, If you use --enable-shared option, you should append python DSO to ld.so.conf. # echo &quot;/usr/local/python27/lib/&quot; &gt; /etc/ld.so.conf.d/python2.7-x86_64.conf Install pip with get-pip.py # cd $HOME/tmp # wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate # /usr/local/python2.7/bin/python get-pip.py Install virtualenv # /usr/local/python2.7/bin/pip install virtualenv Create a virtualenv $ export LC_ALL=C $ /usr/local/python2.7/bin/virtualenv venv $ source venv/bin/activate $ python --version Python 2.7.11 Python Source Releases | Python.org Installation — pip 8.1.2 documentation Installing Python 2.6, virtualenv, and virtualenvwrapper on Dreamhost pip install - locale.Error: unsupported locale setting" />
+<meta property="og:description" content="Show CentOS version $ uname -ri 2.6.18-398.el5 i386 $ cat /etc/*release CentOS release 5.11 (Final) Install “Develement Tools” # yum -y groupinstall &quot;Development Tools&quot; Download Gzipped source tarball # mkdir $HOME/tmp # cd $HOME/tmp # wget https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz # tar xf Python-2.7.11.tgz # cd Python-2.7.11 # ./configure --prefix=/usr/local/python2.7 # make ... Python build finished, but the necessary bits to build these modules were not found: _bsddb _curses _curses_panel _sqlite3 _ssl _tkinter bsddb185 bz2 dbm gdbm readline sunaudiodev zlib To install these modules, bz2 # yum -y install bzip2-devel zlib # yum -y install zlib-devel readline # yum -y install readline-devel _sqlite3 # yum -y install sqlite-devel _tkinter # yum -y install tk-devel _curses _curses_panel # yum -y install ncurses-devel _bsddb # yum -y install db4-devel gdbm # yum -y install gdbm-devel _ssl With dist packages # yum -y install openssl-devel Make with source # wget https://www.openssl.org/source/openssl-1.0.2h.tar.gz # tar xf openssl-1.0.2h.tar.gz # cd openssl-1.0.2h # ./config --prefix=/usr shared # make install Configure &amp; Make install Python-2.7.11 You can also use --enable-shared option to build shared versions of libraries. # cd $HOME/tmp/Python-2.7.11 # ./configure --prefix=/usr/local/python2.7 # make ... Python build finished, but the necessary bits to build these modules were not found: bsddb185 sunaudiodev To find the necessary bits, look in setup.py in detect_modules() for the module&#39;s name. running build_scripts # make install Add /usr/local/python2.7/lib/ to ld.so.conf, If you use --enable-shared option, you should append python DSO to ld.so.conf. # echo &quot;/usr/local/python27/lib/&quot; &gt; /etc/ld.so.conf.d/python2.7-x86_64.conf Install pip with get-pip.py # cd $HOME/tmp # wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate # /usr/local/python2.7/bin/python get-pip.py Install virtualenv # /usr/local/python2.7/bin/pip install virtualenv Create a virtualenv $ export LC_ALL=C $ /usr/local/python2.7/bin/virtualenv venv $ source venv/bin/activate $ python --version Python 2.7.11 Python Source Releases | Python.org Installation — pip 8.1.2 documentation Installing Python 2.6, virtualenv, and virtualenvwrapper on Dreamhost pip install - locale.Error: unsupported locale setting" />
+<link rel="canonical" href="https://blog.codefarm.me/2016/05/11/how-to-install-python-2.7-from-source-on-centos/" />
+<meta property="og:url" content="https://blog.codefarm.me/2016/05/11/how-to-install-python-2.7-from-source-on-centos/" />
+<meta property="og:site_name" content="CODE FARM" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-05-11T23:38:01+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to install Python 2.7 from source on CentOS" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2016-05-11T23:38:01+08:00","datePublished":"2016-05-11T23:38:01+08:00","description":"Show CentOS version $ uname -ri 2.6.18-398.el5 i386 $ cat /etc/*release CentOS release 5.11 (Final) Install “Develement Tools” # yum -y groupinstall &quot;Development Tools&quot; Download Gzipped source tarball # mkdir $HOME/tmp # cd $HOME/tmp # wget https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz # tar xf Python-2.7.11.tgz # cd Python-2.7.11 # ./configure --prefix=/usr/local/python2.7 # make ... Python build finished, but the necessary bits to build these modules were not found: _bsddb _curses _curses_panel _sqlite3 _ssl _tkinter bsddb185 bz2 dbm gdbm readline sunaudiodev zlib To install these modules, bz2 # yum -y install bzip2-devel zlib # yum -y install zlib-devel readline # yum -y install readline-devel _sqlite3 # yum -y install sqlite-devel _tkinter # yum -y install tk-devel _curses _curses_panel # yum -y install ncurses-devel _bsddb # yum -y install db4-devel gdbm # yum -y install gdbm-devel _ssl With dist packages # yum -y install openssl-devel Make with source # wget https://www.openssl.org/source/openssl-1.0.2h.tar.gz # tar xf openssl-1.0.2h.tar.gz # cd openssl-1.0.2h # ./config --prefix=/usr shared # make install Configure &amp; Make install Python-2.7.11 You can also use --enable-shared option to build shared versions of libraries. # cd $HOME/tmp/Python-2.7.11 # ./configure --prefix=/usr/local/python2.7 # make ... Python build finished, but the necessary bits to build these modules were not found: bsddb185 sunaudiodev To find the necessary bits, look in setup.py in detect_modules() for the module&#39;s name. running build_scripts # make install Add /usr/local/python2.7/lib/ to ld.so.conf, If you use --enable-shared option, you should append python DSO to ld.so.conf. # echo &quot;/usr/local/python27/lib/&quot; &gt; /etc/ld.so.conf.d/python2.7-x86_64.conf Install pip with get-pip.py # cd $HOME/tmp # wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate # /usr/local/python2.7/bin/python get-pip.py Install virtualenv # /usr/local/python2.7/bin/pip install virtualenv Create a virtualenv $ export LC_ALL=C $ /usr/local/python2.7/bin/virtualenv venv $ source venv/bin/activate $ python --version Python 2.7.11 Python Source Releases | Python.org Installation — pip 8.1.2 documentation Installing Python 2.6, virtualenv, and virtualenvwrapper on Dreamhost pip install - locale.Error: unsupported locale setting","headline":"How to install Python 2.7 from source on CentOS","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.codefarm.me/2016/05/11/how-to-install-python-2.7-from-source-on-centos/"},"url":"https://blog.codefarm.me/2016/05/11/how-to-install-python-2.7-from-source-on-centos/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css"><!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SN88FJ18E5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-SN88FJ18E5');
+    </script></head>
+  <body>
+    <header class="c-header">
+  <div class="o-container">
+    <a class="c-header-title" href="/">CODE FARM</a>
+    <button class="c-header-nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+      <span class="c-header-nav-toggle-icon"></span>
+    </button>
+    <div class="c-header-nav-wrapper" id="nav-wrapper">
+      <nav class="c-header-nav">
+        <a href="/">Home</a>
+        <a href="/categories/">Category</a>
+        <a href="/tags/">Tag</a>
+        <a href="/archives/">Archive</a>
+        <a href="/about/">About</a>
+        <a href="https://resume.github.io/?looogos" target="_blank">R&eacute;sum&eacute;</a>
+      </nav>
+    </div>
+  </div>
+  
+
+
+
+<div class="o-container">
+  <div class="c-banner">
+    <img src="/assets/images/galaxy.svg" alt="Galaxy background" class="c-banner-bg">
+    <div class="c-banner-quote">
+      <p>"The Renaissance was a time when art, science, and philosophy flourished."</p>
+      <cite>- Michelangelo</cite>
+    </div>
+  </div>
+</div>
+</header>
+
+    <main class="o-container">
+      <article class="c-post">
+  <header class="c-post-header">
+    <h1 class="c-post-title">How to install Python 2.7 from source on CentOS</h1><p class="c-post-meta">11 May 2016</p>
+  </header>
+
+  <div class="c-post-content">
+    <h4 id="show-centos-version">Show CentOS version</h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$  uname -ri
+2.6.18-398.el5 i386
+$ cat /etc/*release
+CentOS release 5.11 (Final)
+</code></pre></div></div>
+
+<h4 id="install-develement-tools">Install “Develement Tools”</h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># yum -y groupinstall "Development Tools"
+</code></pre></div></div>
+
+<h4 id="download-gzipped-source-tarball">Download <a href="https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz">Gzipped source tarball</a></h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># mkdir $HOME/tmp
+# cd $HOME/tmp
+# wget https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz
+# tar xf Python-2.7.11.tgz
+# cd Python-2.7.11
+# ./configure --prefix=/usr/local/python2.7
+# make
+...
+Python build finished, but the necessary bits to build these modules were not found:
+_bsddb             _curses            _curses_panel   
+_sqlite3           _ssl               _tkinter        
+bsddb185           bz2                dbm             
+gdbm               readline           sunaudiodev     
+zlib
+</code></pre></div></div>
+
+<p>To install these modules,</p>
+
+<ul>
+  <li>
+    <p>bz2</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # yum -y install bzip2-devel
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>zlib</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # yum -y install zlib-devel
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>readline</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # yum -y install readline-devel
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>_sqlite3</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # yum -y install sqlite-devel
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>_tkinter</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # yum -y install tk-devel
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>_curses _curses_panel</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # yum -y install ncurses-devel
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>_bsddb</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # yum -y install db4-devel
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>gdbm</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # yum -y install gdbm-devel
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>_ssl</p>
+
+    <p>With dist packages</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # yum -y install openssl-devel
+</code></pre></div>    </div>
+
+    <p>Make with source</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # wget https://www.openssl.org/source/openssl-1.0.2h.tar.gz
+  # tar xf openssl-1.0.2h.tar.gz
+  # cd openssl-1.0.2h
+  # ./config --prefix=/usr shared
+  # make install
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h4 id="configure--make-install-python-2711">Configure &amp; Make install Python-2.7.11</h4>
+
+<p>You can also use <code class="language-plaintext highlighter-rouge">--enable-shared</code> option to build shared versions of libraries.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cd $HOME/tmp/Python-2.7.11
+# ./configure --prefix=/usr/local/python2.7
+# make
+...
+Python build finished, but the necessary bits to build these modules were not found:
+bsddb185           sunaudiodev                        
+To find the necessary bits, look in setup.py in detect_modules() for the module's name.
+
+running build_scripts
+# make install
+</code></pre></div></div>
+
+<h4 id="add-usrlocalpython27lib-to-ldsoconf">Add <code class="language-plaintext highlighter-rouge">/usr/local/python2.7/lib/</code> to <code class="language-plaintext highlighter-rouge">ld.so.conf</code>,</h4>
+
+<p>If you use <code class="language-plaintext highlighter-rouge">--enable-shared</code> option, you should append python DSO to <code class="language-plaintext highlighter-rouge">ld.so.conf</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># echo "/usr/local/python27/lib/" &gt; /etc/ld.so.conf.d/python2.7-x86_64.conf
+</code></pre></div></div>
+
+<h4 id="install-pip-with-get-pippy">Install pip with <a href="https://bootstrap.pypa.io/get-pip.py">get-pip.py</a></h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cd $HOME/tmp
+# wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate
+# /usr/local/python2.7/bin/python get-pip.py
+</code></pre></div></div>
+
+<h4 id="install-virtualenv">Install virtualenv</h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># /usr/local/python2.7/bin/pip install virtualenv
+</code></pre></div></div>
+
+<h4 id="create-a-virtualenv">Create a virtualenv</h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ export LC_ALL=C
+$ /usr/local/python2.7/bin/virtualenv venv
+$ source venv/bin/activate
+$ python --version
+Python 2.7.11
+</code></pre></div></div>
+
+<hr />
+
+<ul>
+  <li><a href="https://www.python.org/downloads/source/">Python Source Releases | Python.org</a></li>
+  <li><a href="https://pip.pypa.io/en/stable/installing/#installing-with-get-pip-py">Installation — pip 8.1.2 documentation</a></li>
+  <li><a href="http://andrew.io/weblog/2010/02/installing-python-2-6-virtualenv-and-virtualenvwrapper-on-dreamhost/">Installing Python 2.6, virtualenv, and virtualenvwrapper on Dreamhost</a></li>
+  <li><a href="http://stackoverflow.com/questions/36394101/pip-install-locale-error-unsupported-locale-setting/36394262#36394262">pip install - locale.Error: unsupported locale setting</a></li>
+</ul>
+
+<style>
+  .utterances {
+      max-width: 100%;
+  }
+</style>
+<script src="https://utteranc.es/client.js"
+        repo="looogos/utterances"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</article>
+    </main>
+    <footer class="c-footer">
+  <div class="c-footer-license">
+    <span>Article licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></span>
+  </div>
+  
+  <details class="c-footer-extralinks" open>
+    <summary class="c-footer-extralinks-summary">Extral Links</summary>
+    <div class="c-footer-extralinks-content">
+      
+      <a href="https://jekyllrb.com/">Jekyll</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://shopify.github.io/liquid/">Liquid</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://docs.asciidoctor.org/">Asciidoctor</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://github.com/qqbuby/">GitHub</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="/feed.xml">RSS</a>
+      
+      
+    </div>
+  </details>
+  
+</footer>
+
+    <script src="/assets/js/nav.js" defer></script>
+    <script src="/assets/js/heading-anchors.js" defer></script>
+    <!-- https://cdn.jsdelivr.net/gh/lurongkai/anti-baidu/js/anti-baidu-latest.min.js -->    
+    <script type="text/javascript" src="/js/anti-baidu.min.js" charset="UTF-8"></script>
+  </body>
+</html>

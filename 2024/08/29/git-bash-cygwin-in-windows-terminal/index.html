@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Git Bash and Cygwin in Windows Terminal | CODE FARM</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Git Bash and Cygwin in Windows Terminal" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="1. Git Bash 2. Cygwin 1. Git Bash Open Windows Terminal Enter the Settings page (Ctrl + ,) Click the Add a new profile on the left bottom panel On the Add a new profile page, click New empty profile or Duplicate from an existed profile On the new profile page, fill the following options: Name: Git Bash Command Line: C:\Program Files\Git\bin\bash.exe -i -l The -i -l or --interactive --login options will make Git Bash work on non-ASCII text well. Without -i -l: $ ls -l /tmp/hello/ total 0 -rw-r--r-- 1 ousia 197121 0 Aug 29 16:46 &#39;□□&#39;$&#39;\226&#39;&#39;□&#39;$&#39;\225\214&#39; With -i -l: $ ls -l /tmp/hello/ total 0 -rw-r--r-- 1 ousia 197121 0 Aug 29 16:46 世界 Starting Directory: %USERPROFILE% Icon: C:\Program Files\Git\git-bash.exe Click the Save on the right bottom to finish it. To solve Git not displaying unicode file names: $ git init --initial-branch=main $ touch &#39;Hello 世界.txt&#39; $ git status On branch main No commits yet Untracked files: (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed) &quot;Hello \344\270\226\347\225\214.txt&quot; nothing added to commit but untracked files present (use &quot;git add&quot; to track) $ git config core.quotePath false $ git status On branch main No commits yet Untracked files: (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed) Hello 世界.txt nothing added to commit but untracked files present (use &quot;git add&quot; to track) You can also specify the --global option as below: git config --global core.quotePath false 2. Cygwin Run setup-x86_64.exe any time you want to update or install a Cygwin package for 64-bit windows. The setup program will check by default if it runs with administrative privileges and, if not, will try to elevate the process. If you want to avoid this behaviour and install under an unprivileged account just for your own usage, run setup with the --no-admin option. ./setup-x86_64.exe --no-admin Add the ROOT_INSTALL_DIRECTORY + bin directory to the PATH environment, such as: C:\cygwin64\bin" />
+<meta property="og:description" content="1. Git Bash 2. Cygwin 1. Git Bash Open Windows Terminal Enter the Settings page (Ctrl + ,) Click the Add a new profile on the left bottom panel On the Add a new profile page, click New empty profile or Duplicate from an existed profile On the new profile page, fill the following options: Name: Git Bash Command Line: C:\Program Files\Git\bin\bash.exe -i -l The -i -l or --interactive --login options will make Git Bash work on non-ASCII text well. Without -i -l: $ ls -l /tmp/hello/ total 0 -rw-r--r-- 1 ousia 197121 0 Aug 29 16:46 &#39;□□&#39;$&#39;\226&#39;&#39;□&#39;$&#39;\225\214&#39; With -i -l: $ ls -l /tmp/hello/ total 0 -rw-r--r-- 1 ousia 197121 0 Aug 29 16:46 世界 Starting Directory: %USERPROFILE% Icon: C:\Program Files\Git\git-bash.exe Click the Save on the right bottom to finish it. To solve Git not displaying unicode file names: $ git init --initial-branch=main $ touch &#39;Hello 世界.txt&#39; $ git status On branch main No commits yet Untracked files: (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed) &quot;Hello \344\270\226\347\225\214.txt&quot; nothing added to commit but untracked files present (use &quot;git add&quot; to track) $ git config core.quotePath false $ git status On branch main No commits yet Untracked files: (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed) Hello 世界.txt nothing added to commit but untracked files present (use &quot;git add&quot; to track) You can also specify the --global option as below: git config --global core.quotePath false 2. Cygwin Run setup-x86_64.exe any time you want to update or install a Cygwin package for 64-bit windows. The setup program will check by default if it runs with administrative privileges and, if not, will try to elevate the process. If you want to avoid this behaviour and install under an unprivileged account just for your own usage, run setup with the --no-admin option. ./setup-x86_64.exe --no-admin Add the ROOT_INSTALL_DIRECTORY + bin directory to the PATH environment, such as: C:\cygwin64\bin" />
+<link rel="canonical" href="https://blog.codefarm.me/2024/08/29/git-bash-cygwin-in-windows-terminal/" />
+<meta property="og:url" content="https://blog.codefarm.me/2024/08/29/git-bash-cygwin-in-windows-terminal/" />
+<meta property="og:site_name" content="CODE FARM" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-08-29T16:32:49+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Git Bash and Cygwin in Windows Terminal" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-08-29T16:32:49+08:00","datePublished":"2024-08-29T16:32:49+08:00","description":"1. Git Bash 2. Cygwin 1. Git Bash Open Windows Terminal Enter the Settings page (Ctrl + ,) Click the Add a new profile on the left bottom panel On the Add a new profile page, click New empty profile or Duplicate from an existed profile On the new profile page, fill the following options: Name: Git Bash Command Line: C:\\Program Files\\Git\\bin\\bash.exe -i -l The -i -l or --interactive --login options will make Git Bash work on non-ASCII text well. Without -i -l: $ ls -l /tmp/hello/ total 0 -rw-r--r-- 1 ousia 197121 0 Aug 29 16:46 &#39;□□&#39;$&#39;\\226&#39;&#39;□&#39;$&#39;\\225\\214&#39; With -i -l: $ ls -l /tmp/hello/ total 0 -rw-r--r-- 1 ousia 197121 0 Aug 29 16:46 世界 Starting Directory: %USERPROFILE% Icon: C:\\Program Files\\Git\\git-bash.exe Click the Save on the right bottom to finish it. To solve Git not displaying unicode file names: $ git init --initial-branch=main $ touch &#39;Hello 世界.txt&#39; $ git status On branch main No commits yet Untracked files: (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed) &quot;Hello \\344\\270\\226\\347\\225\\214.txt&quot; nothing added to commit but untracked files present (use &quot;git add&quot; to track) $ git config core.quotePath false $ git status On branch main No commits yet Untracked files: (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed) Hello 世界.txt nothing added to commit but untracked files present (use &quot;git add&quot; to track) You can also specify the --global option as below: git config --global core.quotePath false 2. Cygwin Run setup-x86_64.exe any time you want to update or install a Cygwin package for 64-bit windows. The setup program will check by default if it runs with administrative privileges and, if not, will try to elevate the process. If you want to avoid this behaviour and install under an unprivileged account just for your own usage, run setup with the --no-admin option. ./setup-x86_64.exe --no-admin Add the ROOT_INSTALL_DIRECTORY + bin directory to the PATH environment, such as: C:\\cygwin64\\bin","headline":"Git Bash and Cygwin in Windows Terminal","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.codefarm.me/2024/08/29/git-bash-cygwin-in-windows-terminal/"},"url":"https://blog.codefarm.me/2024/08/29/git-bash-cygwin-in-windows-terminal/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css"><!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SN88FJ18E5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-SN88FJ18E5');
+    </script></head>
+  <body>
+    <header class="c-header">
+  <div class="o-container">
+    <a class="c-header-title" href="/">CODE FARM</a>
+    <button class="c-header-nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+      <span class="c-header-nav-toggle-icon"></span>
+    </button>
+    <div class="c-header-nav-wrapper" id="nav-wrapper">
+      <nav class="c-header-nav">
+        <a href="/">Home</a>
+        <a href="/categories/">Category</a>
+        <a href="/tags/">Tag</a>
+        <a href="/archives/">Archive</a>
+        <a href="/about/">About</a>
+        <a href="https://resume.github.io/?looogos" target="_blank">R&eacute;sum&eacute;</a>
+      </nav>
+    </div>
+  </div>
+  
+
+
+
+<div class="o-container">
+  <div class="c-banner">
+    <img src="/assets/images/galaxy.svg" alt="Galaxy background" class="c-banner-bg">
+    <div class="c-banner-quote">
+      <p>"The Renaissance was a time when art, science, and philosophy flourished."</p>
+      <cite>- Michelangelo</cite>
+    </div>
+  </div>
+</div>
+</header>
+
+    <main class="o-container">
+      <article class="c-post">
+  <header class="c-post-header">
+    <h1 class="c-post-title">Git Bash and Cygwin in Windows Terminal</h1><p class="c-post-meta">29 Aug 2024</p>
+  </header>
+
+  <div class="c-post-content">
+    <div id="toc" class="toc">
+<div id="toctitle"></div>
+<ul class="sectlevel1">
+<li><a href="#git-bash">1. Git Bash</a></li>
+<li><a href="#cygwin">2. Cygwin</a></li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="git-bash">1. Git Bash</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open Windows Terminal</p>
+</li>
+<li>
+<p>Enter the <code>Settings</code> page (<code>Ctrl + ,</code>)</p>
+</li>
+<li>
+<p>Click the <code>Add a new profile</code> on the left bottom panel</p>
+</li>
+<li>
+<p>On the <code>Add a new profile</code> page, click <code>New empty profile</code> or <code>Duplicate</code> from an existed profile</p>
+</li>
+<li>
+<p>On the new profile page, fill the following options:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Name: <code>Git Bash</code></p>
+</li>
+<li>
+<p>Command Line: <code>C:\Program Files\Git\bin\bash.exe -i -l</code></p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The <code>-i -l</code> or <code>--interactive --login</code> options will make Git Bash work on non-ASCII text well.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Without <code>-i -l</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span><span class="nb">ls</span> <span class="nt">-l</span> /tmp/hello/
+<span class="go">total 0
+</span><span class="gp">-rw-r--r-- 1 ousia 197121 0 Aug 29 16:46 '□□'$</span><span class="s1">'\226''□'$'</span><span class="se">\2</span><span class="s1">25</span><span class="se">\2</span><span class="s1">14'</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>With <code>-i -l</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span><span class="nb">ls</span> <span class="nt">-l</span> /tmp/hello/
+<span class="go">total 0
+-rw-r--r-- 1 ousia 197121 0 Aug 29 16:46 世界</span></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Starting Directory: <code>%USERPROFILE%</code></p>
+</li>
+<li>
+<p>Icon: <code>C:\Program Files\Git\git-bash.exe</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Click the <code>Save</code> on the right bottom to finish it.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To solve Git not displaying unicode file names:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git init <span class="nt">--initial-branch</span><span class="o">=</span>main
+<span class="gp">$</span><span class="w"> </span><span class="nb">touch</span> <span class="s1">'Hello 世界.txt'</span>
+<span class="gp">$</span><span class="w"> </span>git status
+<span class="go">On branch main
+
+No commits yet
+
+Untracked files:
+</span><span class="gp">  (use "git add &lt;file&gt;</span>...<span class="s2">" to include in what will be committed)
+</span><span class="go">        "Hello \344\270\226\347\225\214.txt"
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+</span><span class="gp">$</span><span class="w"> </span>git config core.quotePath <span class="nb">false</span>
+<span class="go">
+</span><span class="gp">$</span><span class="w"> </span>git status
+<span class="go">On branch main
+
+No commits yet
+
+Untracked files:
+</span><span class="gp">  (use "git add &lt;file&gt;</span>...<span class="s2">" to include in what will be committed)
+</span><span class="go">        Hello 世界.txt
+
+nothing added to commit but untracked files present (use "git add" to track)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also specify the <code>--global</code> option as below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="sh">git config <span class="nt">--global</span> core.quotePath <span class="nb">false</span></code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cygwin">2. Cygwin</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Run <a href="https://www.cygwin.com/setup-x86_64.exe">setup-x86_64.exe</a> any time you want to update or install a Cygwin package for 64-bit windows.</p>
+</li>
+<li>
+<p>The setup program will check by default if it runs with administrative privileges and, if not, will try to elevate the process. If you want to avoid this behaviour and install under an unprivileged account just for your own usage, run setup with the <code>--no-admin</code> option.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="sh">./setup-x86_64.exe <span class="nt">--no-admin</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add the <code>ROOT_INSTALL_DIRECTORY</code> + <code>bin</code> directory to the <code>PATH</code> environment, such as:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="txt">C:\cygwin64\bin</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<style>
+  .utterances {
+      max-width: 100%;
+  }
+</style>
+<script src="https://utteranc.es/client.js"
+        repo="looogos/utterances"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</article>
+    </main>
+    <footer class="c-footer">
+  <div class="c-footer-license">
+    <span>Article licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></span>
+  </div>
+  
+  <details class="c-footer-extralinks" open>
+    <summary class="c-footer-extralinks-summary">Extral Links</summary>
+    <div class="c-footer-extralinks-content">
+      
+      <a href="https://jekyllrb.com/">Jekyll</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://shopify.github.io/liquid/">Liquid</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://docs.asciidoctor.org/">Asciidoctor</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://github.com/qqbuby/">GitHub</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="/feed.xml">RSS</a>
+      
+      
+    </div>
+  </details>
+  
+</footer>
+
+    <script src="/assets/js/nav.js" defer></script>
+    <script src="/assets/js/heading-anchors.js" defer></script>
+    <!-- https://cdn.jsdelivr.net/gh/lurongkai/anti-baidu/js/anti-baidu-latest.min.js -->    
+    <script type="text/javascript" src="/js/anti-baidu.min.js" charset="UTF-8"></script>
+  </body>
+</html>

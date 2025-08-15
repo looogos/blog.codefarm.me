@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Tour of Go - Basics | CODE FARM</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Tour of Go - Basics" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="Packages, variables, and function Packages Every Go program is made up of packages. Programs start running in package main. This program is using the packages with import paths &quot;fmt&quot; and &quot;math/rand&quot;. By convention, the package name is the same as the last element of the import path. For instance, the &quot;math/rand&quot; package comprises files that begin with the statement package rand. Note: the environment in which these programs are executed is deterministic, so rand.Intn will always return the same number. (To see a different number, seed the number generator; see rand.Seed.) package main import ( &quot;fmt&quot; &quot;math/rand&quot; ) func main() { fmt.Println(&quot;My favorite number is &quot;, rand.Intn(10)) //fmt.Println(rand.Seed(1)) } Imports This code groups the imports into a parenthesized, “factored” import statement. You can also write multiple import statements, like: import &quot;fmt&quot; import &quot;math&quot; But it is good style to use the factored import statement. package main import ( &quot;fmt&quot; &quot;math&quot; ) func main() { fmt.Printf(&quot;Now you have %g problems.&quot;, math.Nextafter(2, 3)) } Exported names After importing a package, you can refer to the names it exports. In Go, a name is exported if it begins with a capital letter. Foo is an exported name, as is FOO. The name foo is not exported. Run the code. Then rename math.pi to math.Pi and try it again. package main import ( &quot;fmt&quot; &quot;math&quot; ) func main() { fmt.Println(math.Pi) } Functions A function can take zero or more arguments. In this example, add takes two parameters of type int. Notice that the type comes after the variable name. package main import &quot;fmt&quot; func add(x int, y int) int { return x + y } func main() { fmt.Println(add(42, 13)) } Functions continued When two or more consecutive named function parameters share a type, you can omit the type from all but the last. In this example, we shortened x int, y int to x, y int package main import &quot;fmt&quot; func add(x, y int) int { return x + y } func main() { fmt.Println(add(42, 13)) } Multiple results A function can return any number of results. The swap function returns two strings. package main import &quot;fmt&quot; func swap(x, y string) (string, string) { return y, x } func main() { a, b := swap(&quot;hello&quot;, &quot;world&quot;) fmt.Println(a, b) } Named return values Go’s return values may be named and act just like variables. These names should be used to document the meaning of the return values. A return statement without arguments returns the current values of the results. This is known as a “naked” return. Naked return statements should be used only in short functions, as with the example shown here. They can harm readability in longer functions package main import &quot;fmt&quot; func split(sum int) (x, y int) { x = sum * 4 / 9 y = sum - x return } func foo() (x, y, z int) { x = 1 y = 2 z = 3 return } func main() { fmt.Println(split(17)) fmt.Println(foo()) } Variables The var statement declares a list of variables; as in function argument lists, the type is last. A var statement can be at package or function level. We see both in this example. package main import &quot;fmt&quot; var c, python, java bool func main() { var i int fmt.Println(i, c, python, java) } Variables with initializers A var declaration can include initializers, one per variable. If an initializer is present, the type can be omitted; the variable will take the type of the initializer. package main import &quot;fmt&quot; var i, j = 1, 2 var x, y = &quot;hello&quot;, 100 func main() { var c, python, java = true, false, &quot;no!&quot; fmt.Println(i, j, c, python, java) fmt.Println(x, y) } Short variable declarations# Inside a function, the := short assignment statement can be used in place of a var declaration with implicit type. Outside a function, every statement begins with a keyword (var, func, and so on) and so the := construct is not available. package main import &quot;fmt&quot; func main() { var i, j int = 1, 2 k := 3 c, python, java := true, false, &quot;no!&quot; fmt.Println(i, j, k, c, python, java) } Basic types Go’s basic types are bool string int int8 int16 int32 int64 uint uint8 uint16 uint32 uint64 uintptr byte // alias for uint8 rune // alias for int32 // represents a Unicode code point float32 float64 complex64 complex128 The example shows variables of several types, and also that variable declarations may be “factored” into blocks, as with import statements. The int, uint, and uintptr types are usually 32 bits wide on 32-bit systems and 64 bits wide on 64-bit systems. When you need an integer value you should use int unless you have a specific reason to use a sized or unsigned integer type. package main import ( &quot;fmt&quot; &quot;math/cmplx&quot; ) var ( ToBe bool = false MaxInt uint64 = 1&lt;&lt;64 - 1 z complex128 = cmplx.Sqrt(-5 + 12i) ) func main() { const f = &quot;%T(%v)\n&quot; fmt.Printf(f, ToBe, ToBe) fmt.Printf(f, MaxInt, MaxInt) fmt.Printf(f, z, z) fmt.Printf(f, f) } Zero values Variables declared without an explicit initial value are given their zero value. The zero value is: 0 for numeric types, false the boolean type, and “” (the empty string) for strings. package main import &quot;fmt&quot; func main() { var i int var f float64 var b bool var s string fmt.Printf(&quot;%v %v %v %v\n&quot;, i, f, b, s) } Type conversions The expression T(v) converts the value v to the type T. Some numeric conversions: var i int = 42 var f float64 = float64(i) var u uint = uint(f) Or, put more simply: i := 42 f := float64(i) u := uint(f) Unlike in C, in Go assignment between items of different type requires an explicit conversion. Try removing the float64 or int conversions in the example and see what happens. package main import ( &quot;fmt&quot; &quot;math&quot; ) func main() { var x, y int = 3, 4 var f float64 = math.Sqrt(float64(x*x + y*y)) var z int = int(f) fmt.Println(z, y, z) } Type inference When declaring a variable without specifying an explicit type (either by using the := syntax or var = expression syntax), the variable’s type is inferred from the value on the right hand side. When the right hand side of the declaration is typed, the new variable is of that same type: var i int j := i // j is an int But when the right hand side contains an untyped numeric constant, the new variable may be an int, float64, or complex128 depending on the precision of the constant: i := 42 // int f := 3.142 // float64 g := 0.867 + 0.5i // complex128 Try changing the initial value of v in the example code and observe how its type is affected. package main import &quot;fmt&quot; func main() { v := &quot;pgg&quot; // change me! fmt.Printf(&quot;v is of type %T\n&quot;, v) } Constants Constants are declared like variables, but with the const keyword. Constants can be character, string, boolean, or numeric values. Constants cannot be declared using the := syntax. package main import &quot;fmt&quot; const Pi = 3.14 func main() { const World = &quot;世界&quot; fmt.Println(&quot;Hello&quot;, World) fmt.Println(&quot;Happy&quot;, Pi, &quot;Day&quot;) const Truth = true fmt.Println(&quot;Go rules?&quot;, Truth) } Numeric Constants Numeric constants are high-precision values. An untyped constant takes the type needed by its context. Try printing needInt(Big) too. package main import &quot;fmt&quot; const ( Big = 1 &lt;&lt; 100 Small = Big &gt;&gt; 99 ) func needInt(x int) int { return x*10 + 1 } func needFloat(x float64) float64 { return x * 0.1 } func main() { fmt.Println(needInt(Small)) fmt.Println(needFloat(Small)) fmt.Println(needFloat(Big)) fmt.Println(needInt(int(Big))) } Flow control statements: for, if, else, switch and defe For Go has only one looping construct, the for loop. The basic for loop looks as it does in C or Java, except that the ( ) are gone (they are not even optional) and the { } are required. package main import &quot;fmt&quot; func main() { sum := 0 for i := 0; i &lt; 10; i++ { sum += 1 } fmt.Println(sum) } For continued As in C or Java, you can leave the pre and post statements empty. package main import &quot;fmt&quot; func main() { sum := 1 for ; sum &lt; 1000 ; { sum += sum } fmt.Println(sum) } For is Go’s “while” At that point you can drop the semicolons: C’s while is spelled for in Go. package main import &quot;fmt&quot; func main() { sum := 1 for sum &lt; 1000 { sum += sum } fmt.Println(sum) } Forever If you omit the loop condition it loops forever, so an infinite loop is compactly expressed. package main import &quot;fmt&quot; func main() { var i int = 10 for { fmt.Println(&quot;Hello TOM!&quot;) i = i - 1 if i &lt; 0 { break } } } If The if statement looks as it does in C or Java, except that the ( ) are gone and the { } are required. (Sound familiar?) package main import ( &quot;fmt&quot; &quot;math&quot; ) func sqrt(x float64) string { if x &lt; 0 { return sqrt(-x) + &quot;i&quot; } return fmt.Sprint(math.Sqrt(x)) } func main() { fmt.Println(sqrt(2), sqrt(-4)) } If with a short statement Like for, the if statement can start with a short statement to execute before the condition. Variables declared by the statement are only in scope until the end of the if. (Try using v in the last return statement.) package main import ( &quot;fmt&quot; &quot;math&quot; ) func pow(x, n, lim float64) float64 { v := 1 if v := math.Pow(x, n); v &lt; lim { fmt.Println(v) return v } fmt.Println(v) return lim } func main() { fmt.Println( pow(3, 2, 10), pow(3, 3, 20)) } If and else Variables declared inside an if short statement are also available inside any of the else blocks. package main import ( &quot;fmt&quot; &quot;math&quot; ) func pow(x, n, lim float64) float64 { if v := math.Pow(x, n); v &lt; lim { return v } else { x := 100 fmt.Println(x) fmt.Printf(&quot;%g &gt;= %g\n&quot;, v, lim) } // can&#39;t use v here, though return lim } func main() { fmt.Println( pow(3, 2, 10), pow(3, 3, 20), ) } Switch You probably knew what switch was going to look like. A case body breaks automatically, unless it ends with a fallthrough statement. package main import ( &quot;fmt&quot; &quot;runtime&quot; ) func main() { fmt.Print(&quot;Go runs on &quot;) switch os := runtime.GOOS; os { case &quot;darwin&quot;: fmt.Println(&quot;OS X.&quot;) case &quot;linux&quot;: fmt.Println(&quot;Linux.&quot;) default: // freebsd, openbsd, // plan9, windows... fmt.Print(&quot;%s.&quot;, os) } } Switch evaluation order Switch cases evaluate cases from top to bottom, stopping when a case succeeds. (For example, switch i { case 0: case f(): } does not call f if i==0.) Note: Time in the Go playground always appears to start at 2009-11-10 23:00:00 UTC, a value whose significance is left as an exercise for the reader. package main import ( &quot;fmt&quot; &quot;time&quot; ) func main() { fmt.Println(&quot;When&#39;s Saturday?&quot;) today := time.Now().Weekday() switch time.Saturday { case today + 0: fmt.Println(&quot;Today.&quot;) case today + 1: fmt.Println(&quot;Tomorrow.&quot;) case today + 2: fmt.Println(&quot;In two days.&quot;) default: fmt.Println(&quot;Too far away.&quot;) } } Switch with no condition Switch without a condition is the same as switch true. This construct can be a clean way to write long if-then-else chains. package main import ( &quot;fmt&quot; &quot;time&quot; ) func main() { t := time.Now() switch { case t.Hour() &lt; 12: fmt.Println(&quot;Good morning!&quot;) case t.Hour() &lt; 17: fmt.Println(&quot;Good afternoon!&quot;) default: fmt.Println(&quot;Good evening.&quot;) } } Defer A defer statement defers the execution of a function until the surrounding function returns. The deferred call’s arguments are evaluated immediately, but the function call is not executed until the surrounding function returns. package main import &quot;fmt&quot; func main() { defer fmt.Println(&quot;world&quot;) fmt.Println(&quot;hello&quot;) } Stacking defers Deferred function calls are pushed onto a stack. When a function returns, its deferred calls are executed in last-in-first-out order. To learn more about defer statements read this blog post. package main import &quot;fmt&quot; func main() { fmt.Println(&quot;counting&quot;) for i := 0; i &lt; 10; i++ { defer fmt.Println(i) } fmt.Println(&quot;done&quot;) } More types: structs, slices, and map Pointers Go has pointers. A pointer holds the memory address of a variable. The type *T is a pointer to a T value. Its zero value is nil. var p *int The &amp; operator generates a pointer to its operand. i := 42 p = &amp;i The * operator denotes the pointer’s underlying value. fmt.Println(*p) // read i through the pointer p *p = 21 // set i through the pointer p This is known as “dereferencing” or “indirecting”. Unlike C, Go has no pointer arithmetic. package main import &quot;fmt&quot; func main() { var p *int i := 10 p = &amp;i *p += 10 fmt.Println(p, *p, &amp;p) } Structs A struct is a collection of fields. (And a type declaration does what you’d expect.) package main import &quot;fmt&quot; type Vertex struct { X int Y int } type Foo struct { B int A, R int } func main() { fmt.Println(Vertex{1, 2}) var foo = Foo{1, 2, 3} fmt.Println(foo) } Struct Fields Struct fields are accessed using a dot. package main import &quot;fmt&quot; type Vertex struct { X int Y int } func main() { v := Vertex{1, 2} v.X = 4 fmt.Println(v) } Pointers to structs Struct fields can be accessed through a struct pointer. The indirection through the pointer is transparent. package main import &quot;fmt&quot; type Vertex struct { X int Y int } func main() { v := Vertex{1, 2} p := &amp;v p.X = 1e9 fmt.Println(v) } Struct Literals A struct literal denotes a newly allocated struct value by listing the values of its fields. You can list just a subset of fields by using the Name: syntax. (And the order of named fields is irrelevant.) The special prefix &amp; returns a pointer to the struct value. package main import &quot;fmt&quot; type Vertex struct { X, Y int } var ( v1 = Vertex{1, 2} // has type Vertex v2 = Vertex{X: 1} // Y:0 is implicit v3 = Vertex{} // X:0 and Y:0 p = &amp;Vertex{1, 2} // has type *Vertex ) func main() { fmt.Println(v1, p, v2, v3) var v4 = Vertex{Y: 10, X: 11} fmt.Println(v4, &amp;v4, *(&amp;v4)) } Arrays The type [n]T is an array of n values of type T. The expression var a [10]int declares a variable a as an array of ten integers. An array’s length is part of its type, so arrays cannot be resized. This seems limiting, but don’t worry; Go provides a convenient way of working with arrays. package main import &quot;fmt&quot; func main() { var a [2]string a[0] = &quot;Hello&quot; a[1] = &quot;World&quot; fmt.Println(a[0], a[1]) fmt.Println(a) var b [2]int b[0] = 1 b[1] = 2 fmt.Printf(&quot;%T,%v&quot;, b, b) } Slices A slice points to an array of values and also includes a length. []T is a slice with elements of type T. package main import &quot;fmt&quot; func main() { var a = [...]int{1, 2, 3, 4, 5, 6, 7} var s1 = a[1:3] for i := 0; i &lt; len(s1); i++ { fmt.Println(s1[i]) } s1[0] = 10 fmt.Println(a) fmt.Println(s1) } Slicing slices Slices can be re-sliced, creating a new slice value that points to the same array. The expression s[lo:hi] evaluates to a slice of the elements from lo through hi-1, inclusive. Thus s[lo:lo] is empty and s[lo:lo+1] has one element. package main import &quot;fmt&quot; func main() { s := []int{2, 3, 5, 7, 11, 13} fmt.Println(&quot;s ==&quot;, s) fmt.Println(&quot;s[1:4] ==&quot;, s[1:4]) // missing low index implies 0 fmt.Println(&quot;s[:3] ==&quot;, s[:3]) // missing high index implies len(s) fmt.Println(&quot;s[4:] ==&quot;, s[4:]) } Making slices Slices are created with the make function. It works by allocating a zeroed array and returning a slice that refers to that array: a := make([]int, 5) // len(a)=5 To specify a capacity, pass a third argument to make: b := make([]int, 0, 5) // len(b)=0, cap(b)=5 b = b[:cap(b)] // len(b)=5, cap(b)=5 b = b[1:] // len(b)=4, cap(b)=4 package main import &quot;fmt&quot; func main() { a := make([]int, 5) b := make([]int, 0, 5) c := a[:3] fmt.Println(c) d := b[:2] fmt.Println(d) } Nil slices The zero value of a slice is nil. A nil slice has a length and capacity of 0. package main import &quot;fmt&quot; func main() { var z [1]int fmt.Println(z, len(z), cap(z)) //if z == nil { fmt.Println(&quot;nil!&quot;) //} } Adding elements to a slice It is common to append new elements to a slice, and so Go provides a built-in append function. The documentation of the built-in package describes append. func append(s []T, vs ...T) []T The first parameter s of append is a slice of type T, and the rest are T values to append to the slice. The resulting value of append is a slice containing all the elements of the original slice plus the provided values. If the backing array of s is too small to fit all the given values a bigger array will be allocated. The returned slice will point to the newly allocated array. package main import &quot;fmt&quot; func main() { var a []int printSlice(&quot;a&quot;, a) // append works on nil slices. a = append(a, 0) printSlice(&quot;a&quot;, a) // the slice grows as needed. a = append(a, 1) printSlice(&quot;a&quot;, a) // we can add more than one element at a time. a = append(a, 2, 3, 4) printSlice(&quot;a&quot;, a) } func printSlice(s string, x []int) { fmt.Printf(&quot;%s len=%d cap=%d %v\n&quot;, s, len(x), cap(x), x) } Range The range form of the for loop iterates over a slice or map. package main import &quot;fmt&quot; var pow = []int{1, 2, 4, 8, 16, 32, 64, 128} func main() { for i, v := range pow { fmt.Printf(&quot;2**%d = %d\n&quot;, i, v) } } Range continued You can skip the index or value by assigning to _. If you only want the index, drop the “, value” entirely. package main import &quot;fmt&quot; func main() { pow := make([]float64, 10) for i := range pow { // invalid operation: 1 &lt;&lt; uint(i) (shift of type float64) // pow[i] = float64(1&lt;&lt;uint(i)) + 0.1 j := 1 &lt;&lt; uint(i) pow[i] = float64(j) + 0.1 } for i := range pow { fmt.Printf(&quot;%d\n&quot;, i) } } Maps A map maps keys to values. Maps must be created with make (not new) before use; the nil map is empty and cannot be assigned to. package main import &quot;fmt&quot; type Vertex struct { Lat, Long float64 } var m map[string]Vertex func main() { m = make(map[string]Vertex) m[&quot;Bell Labs&quot;] = Vertex{ 40.68433, -74.39967, } fmt.Println(m[&quot;Bell Labs&quot;]) } Map literals Map literals are like struct literals, but the keys are required. package main import &quot;fmt&quot; type Vertex struct { Lat, Long float64 } var m = map[string]Vertex{ &quot;Bell Labs&quot;: Vertex{ 40.68433, -74.39967, }, &quot;Google&quot;: Vertex{ 37.42202, -122.08408, }, } func main() { fmt.Println(m) m2 := make(map[int]string) for i := 0; i &lt; 10; i++ { m2[i] = &quot;Hello&quot; } } Map literals continued If the top-level type is just a type name, you can omit it from the elements of the literal. package main import &quot;fmt&quot; type Vertex struct { Lat, Long float64 } var m = map[string]Vertex{ &quot;Bell Labs&quot;: {40.68433, -74.39967}, &quot;Google&quot;: {37.42202, -122.08408}, } func main() { fmt.Println(m) } Mutating Maps Insert or update an element in map m: m[key] = elem Retrieve an element: elem = m[key] Delete an element: delete(m, key) Test that a key is present with a two-value assignment: elem, ok = m[key] If key is in m, ok is true. If not, ok is false and elem is the zero value for the map’s element type. Similarly, when reading from a map if the key is not present the result is the zero value for the map’s element type. Note: if elem or ok have not yet been declared you could use a short declaration form: elem, ok := m[key] package main import &quot;fmt&quot; func main() { m := make(map[string]int) m[&quot;Answer&quot;] = 42 fmt.Println(&quot;The value:&quot;, m[&quot;Answer&quot;]) m[&quot;Answer&quot;] = 48 fmt.Println(&quot;The value:&quot;, m[&quot;Answer&quot;]) delete(m, &quot;Answer&quot;) fmt.Println(&quot;The value:&quot;, m[&quot;Answer&quot;]) v, ok := m[&quot;Answer&quot;] fmt.Println(&quot;The value:&quot;, v, &quot;Present?&quot;, ok) m[&quot;Question&quot;] = 100 v, ok := m[&quot;Question&quot;] fmt.Println(&quot;The value:&quot;, v, &quot;Present?&quot;, ok) } Function values Functions are values too. package main import ( &quot;fmt&quot; &quot;math&quot; ) func main() { hypot := func(x, y float64) float64 { return math.Sqrt(x*x + y*y) } fmt.Println(hypot(3, 4)) } Function closures Go functions may be closures. A closure is a function value that references variables from outside its body. The function may access and assign to the referenced variables; in this sense the function is “bound” to the variables. For example, the adder function returns a closure. Each closure is bound to its own sum variable. package main import &quot;fmt&quot; func adder() func(int) int { sum := 0 return func(x int) int { sum += x return sum } } func main() { pos, neg := adder(), adder() for i := 0; i &lt; 10; i++ { fmt.Println( pos(i), neg(-2*i), ) } } References Tour of Go,http://tour.golang.org/" />
+<meta property="og:description" content="Packages, variables, and function Packages Every Go program is made up of packages. Programs start running in package main. This program is using the packages with import paths &quot;fmt&quot; and &quot;math/rand&quot;. By convention, the package name is the same as the last element of the import path. For instance, the &quot;math/rand&quot; package comprises files that begin with the statement package rand. Note: the environment in which these programs are executed is deterministic, so rand.Intn will always return the same number. (To see a different number, seed the number generator; see rand.Seed.) package main import ( &quot;fmt&quot; &quot;math/rand&quot; ) func main() { fmt.Println(&quot;My favorite number is &quot;, rand.Intn(10)) //fmt.Println(rand.Seed(1)) } Imports This code groups the imports into a parenthesized, “factored” import statement. You can also write multiple import statements, like: import &quot;fmt&quot; import &quot;math&quot; But it is good style to use the factored import statement. package main import ( &quot;fmt&quot; &quot;math&quot; ) func main() { fmt.Printf(&quot;Now you have %g problems.&quot;, math.Nextafter(2, 3)) } Exported names After importing a package, you can refer to the names it exports. In Go, a name is exported if it begins with a capital letter. Foo is an exported name, as is FOO. The name foo is not exported. Run the code. Then rename math.pi to math.Pi and try it again. package main import ( &quot;fmt&quot; &quot;math&quot; ) func main() { fmt.Println(math.Pi) } Functions A function can take zero or more arguments. In this example, add takes two parameters of type int. Notice that the type comes after the variable name. package main import &quot;fmt&quot; func add(x int, y int) int { return x + y } func main() { fmt.Println(add(42, 13)) } Functions continued When two or more consecutive named function parameters share a type, you can omit the type from all but the last. In this example, we shortened x int, y int to x, y int package main import &quot;fmt&quot; func add(x, y int) int { return x + y } func main() { fmt.Println(add(42, 13)) } Multiple results A function can return any number of results. The swap function returns two strings. package main import &quot;fmt&quot; func swap(x, y string) (string, string) { return y, x } func main() { a, b := swap(&quot;hello&quot;, &quot;world&quot;) fmt.Println(a, b) } Named return values Go’s return values may be named and act just like variables. These names should be used to document the meaning of the return values. A return statement without arguments returns the current values of the results. This is known as a “naked” return. Naked return statements should be used only in short functions, as with the example shown here. They can harm readability in longer functions package main import &quot;fmt&quot; func split(sum int) (x, y int) { x = sum * 4 / 9 y = sum - x return } func foo() (x, y, z int) { x = 1 y = 2 z = 3 return } func main() { fmt.Println(split(17)) fmt.Println(foo()) } Variables The var statement declares a list of variables; as in function argument lists, the type is last. A var statement can be at package or function level. We see both in this example. package main import &quot;fmt&quot; var c, python, java bool func main() { var i int fmt.Println(i, c, python, java) } Variables with initializers A var declaration can include initializers, one per variable. If an initializer is present, the type can be omitted; the variable will take the type of the initializer. package main import &quot;fmt&quot; var i, j = 1, 2 var x, y = &quot;hello&quot;, 100 func main() { var c, python, java = true, false, &quot;no!&quot; fmt.Println(i, j, c, python, java) fmt.Println(x, y) } Short variable declarations# Inside a function, the := short assignment statement can be used in place of a var declaration with implicit type. Outside a function, every statement begins with a keyword (var, func, and so on) and so the := construct is not available. package main import &quot;fmt&quot; func main() { var i, j int = 1, 2 k := 3 c, python, java := true, false, &quot;no!&quot; fmt.Println(i, j, k, c, python, java) } Basic types Go’s basic types are bool string int int8 int16 int32 int64 uint uint8 uint16 uint32 uint64 uintptr byte // alias for uint8 rune // alias for int32 // represents a Unicode code point float32 float64 complex64 complex128 The example shows variables of several types, and also that variable declarations may be “factored” into blocks, as with import statements. The int, uint, and uintptr types are usually 32 bits wide on 32-bit systems and 64 bits wide on 64-bit systems. When you need an integer value you should use int unless you have a specific reason to use a sized or unsigned integer type. package main import ( &quot;fmt&quot; &quot;math/cmplx&quot; ) var ( ToBe bool = false MaxInt uint64 = 1&lt;&lt;64 - 1 z complex128 = cmplx.Sqrt(-5 + 12i) ) func main() { const f = &quot;%T(%v)\n&quot; fmt.Printf(f, ToBe, ToBe) fmt.Printf(f, MaxInt, MaxInt) fmt.Printf(f, z, z) fmt.Printf(f, f) } Zero values Variables declared without an explicit initial value are given their zero value. The zero value is: 0 for numeric types, false the boolean type, and “” (the empty string) for strings. package main import &quot;fmt&quot; func main() { var i int var f float64 var b bool var s string fmt.Printf(&quot;%v %v %v %v\n&quot;, i, f, b, s) } Type conversions The expression T(v) converts the value v to the type T. Some numeric conversions: var i int = 42 var f float64 = float64(i) var u uint = uint(f) Or, put more simply: i := 42 f := float64(i) u := uint(f) Unlike in C, in Go assignment between items of different type requires an explicit conversion. Try removing the float64 or int conversions in the example and see what happens. package main import ( &quot;fmt&quot; &quot;math&quot; ) func main() { var x, y int = 3, 4 var f float64 = math.Sqrt(float64(x*x + y*y)) var z int = int(f) fmt.Println(z, y, z) } Type inference When declaring a variable without specifying an explicit type (either by using the := syntax or var = expression syntax), the variable’s type is inferred from the value on the right hand side. When the right hand side of the declaration is typed, the new variable is of that same type: var i int j := i // j is an int But when the right hand side contains an untyped numeric constant, the new variable may be an int, float64, or complex128 depending on the precision of the constant: i := 42 // int f := 3.142 // float64 g := 0.867 + 0.5i // complex128 Try changing the initial value of v in the example code and observe how its type is affected. package main import &quot;fmt&quot; func main() { v := &quot;pgg&quot; // change me! fmt.Printf(&quot;v is of type %T\n&quot;, v) } Constants Constants are declared like variables, but with the const keyword. Constants can be character, string, boolean, or numeric values. Constants cannot be declared using the := syntax. package main import &quot;fmt&quot; const Pi = 3.14 func main() { const World = &quot;世界&quot; fmt.Println(&quot;Hello&quot;, World) fmt.Println(&quot;Happy&quot;, Pi, &quot;Day&quot;) const Truth = true fmt.Println(&quot;Go rules?&quot;, Truth) } Numeric Constants Numeric constants are high-precision values. An untyped constant takes the type needed by its context. Try printing needInt(Big) too. package main import &quot;fmt&quot; const ( Big = 1 &lt;&lt; 100 Small = Big &gt;&gt; 99 ) func needInt(x int) int { return x*10 + 1 } func needFloat(x float64) float64 { return x * 0.1 } func main() { fmt.Println(needInt(Small)) fmt.Println(needFloat(Small)) fmt.Println(needFloat(Big)) fmt.Println(needInt(int(Big))) } Flow control statements: for, if, else, switch and defe For Go has only one looping construct, the for loop. The basic for loop looks as it does in C or Java, except that the ( ) are gone (they are not even optional) and the { } are required. package main import &quot;fmt&quot; func main() { sum := 0 for i := 0; i &lt; 10; i++ { sum += 1 } fmt.Println(sum) } For continued As in C or Java, you can leave the pre and post statements empty. package main import &quot;fmt&quot; func main() { sum := 1 for ; sum &lt; 1000 ; { sum += sum } fmt.Println(sum) } For is Go’s “while” At that point you can drop the semicolons: C’s while is spelled for in Go. package main import &quot;fmt&quot; func main() { sum := 1 for sum &lt; 1000 { sum += sum } fmt.Println(sum) } Forever If you omit the loop condition it loops forever, so an infinite loop is compactly expressed. package main import &quot;fmt&quot; func main() { var i int = 10 for { fmt.Println(&quot;Hello TOM!&quot;) i = i - 1 if i &lt; 0 { break } } } If The if statement looks as it does in C or Java, except that the ( ) are gone and the { } are required. (Sound familiar?) package main import ( &quot;fmt&quot; &quot;math&quot; ) func sqrt(x float64) string { if x &lt; 0 { return sqrt(-x) + &quot;i&quot; } return fmt.Sprint(math.Sqrt(x)) } func main() { fmt.Println(sqrt(2), sqrt(-4)) } If with a short statement Like for, the if statement can start with a short statement to execute before the condition. Variables declared by the statement are only in scope until the end of the if. (Try using v in the last return statement.) package main import ( &quot;fmt&quot; &quot;math&quot; ) func pow(x, n, lim float64) float64 { v := 1 if v := math.Pow(x, n); v &lt; lim { fmt.Println(v) return v } fmt.Println(v) return lim } func main() { fmt.Println( pow(3, 2, 10), pow(3, 3, 20)) } If and else Variables declared inside an if short statement are also available inside any of the else blocks. package main import ( &quot;fmt&quot; &quot;math&quot; ) func pow(x, n, lim float64) float64 { if v := math.Pow(x, n); v &lt; lim { return v } else { x := 100 fmt.Println(x) fmt.Printf(&quot;%g &gt;= %g\n&quot;, v, lim) } // can&#39;t use v here, though return lim } func main() { fmt.Println( pow(3, 2, 10), pow(3, 3, 20), ) } Switch You probably knew what switch was going to look like. A case body breaks automatically, unless it ends with a fallthrough statement. package main import ( &quot;fmt&quot; &quot;runtime&quot; ) func main() { fmt.Print(&quot;Go runs on &quot;) switch os := runtime.GOOS; os { case &quot;darwin&quot;: fmt.Println(&quot;OS X.&quot;) case &quot;linux&quot;: fmt.Println(&quot;Linux.&quot;) default: // freebsd, openbsd, // plan9, windows... fmt.Print(&quot;%s.&quot;, os) } } Switch evaluation order Switch cases evaluate cases from top to bottom, stopping when a case succeeds. (For example, switch i { case 0: case f(): } does not call f if i==0.) Note: Time in the Go playground always appears to start at 2009-11-10 23:00:00 UTC, a value whose significance is left as an exercise for the reader. package main import ( &quot;fmt&quot; &quot;time&quot; ) func main() { fmt.Println(&quot;When&#39;s Saturday?&quot;) today := time.Now().Weekday() switch time.Saturday { case today + 0: fmt.Println(&quot;Today.&quot;) case today + 1: fmt.Println(&quot;Tomorrow.&quot;) case today + 2: fmt.Println(&quot;In two days.&quot;) default: fmt.Println(&quot;Too far away.&quot;) } } Switch with no condition Switch without a condition is the same as switch true. This construct can be a clean way to write long if-then-else chains. package main import ( &quot;fmt&quot; &quot;time&quot; ) func main() { t := time.Now() switch { case t.Hour() &lt; 12: fmt.Println(&quot;Good morning!&quot;) case t.Hour() &lt; 17: fmt.Println(&quot;Good afternoon!&quot;) default: fmt.Println(&quot;Good evening.&quot;) } } Defer A defer statement defers the execution of a function until the surrounding function returns. The deferred call’s arguments are evaluated immediately, but the function call is not executed until the surrounding function returns. package main import &quot;fmt&quot; func main() { defer fmt.Println(&quot;world&quot;) fmt.Println(&quot;hello&quot;) } Stacking defers Deferred function calls are pushed onto a stack. When a function returns, its deferred calls are executed in last-in-first-out order. To learn more about defer statements read this blog post. package main import &quot;fmt&quot; func main() { fmt.Println(&quot;counting&quot;) for i := 0; i &lt; 10; i++ { defer fmt.Println(i) } fmt.Println(&quot;done&quot;) } More types: structs, slices, and map Pointers Go has pointers. A pointer holds the memory address of a variable. The type *T is a pointer to a T value. Its zero value is nil. var p *int The &amp; operator generates a pointer to its operand. i := 42 p = &amp;i The * operator denotes the pointer’s underlying value. fmt.Println(*p) // read i through the pointer p *p = 21 // set i through the pointer p This is known as “dereferencing” or “indirecting”. Unlike C, Go has no pointer arithmetic. package main import &quot;fmt&quot; func main() { var p *int i := 10 p = &amp;i *p += 10 fmt.Println(p, *p, &amp;p) } Structs A struct is a collection of fields. (And a type declaration does what you’d expect.) package main import &quot;fmt&quot; type Vertex struct { X int Y int } type Foo struct { B int A, R int } func main() { fmt.Println(Vertex{1, 2}) var foo = Foo{1, 2, 3} fmt.Println(foo) } Struct Fields Struct fields are accessed using a dot. package main import &quot;fmt&quot; type Vertex struct { X int Y int } func main() { v := Vertex{1, 2} v.X = 4 fmt.Println(v) } Pointers to structs Struct fields can be accessed through a struct pointer. The indirection through the pointer is transparent. package main import &quot;fmt&quot; type Vertex struct { X int Y int } func main() { v := Vertex{1, 2} p := &amp;v p.X = 1e9 fmt.Println(v) } Struct Literals A struct literal denotes a newly allocated struct value by listing the values of its fields. You can list just a subset of fields by using the Name: syntax. (And the order of named fields is irrelevant.) The special prefix &amp; returns a pointer to the struct value. package main import &quot;fmt&quot; type Vertex struct { X, Y int } var ( v1 = Vertex{1, 2} // has type Vertex v2 = Vertex{X: 1} // Y:0 is implicit v3 = Vertex{} // X:0 and Y:0 p = &amp;Vertex{1, 2} // has type *Vertex ) func main() { fmt.Println(v1, p, v2, v3) var v4 = Vertex{Y: 10, X: 11} fmt.Println(v4, &amp;v4, *(&amp;v4)) } Arrays The type [n]T is an array of n values of type T. The expression var a [10]int declares a variable a as an array of ten integers. An array’s length is part of its type, so arrays cannot be resized. This seems limiting, but don’t worry; Go provides a convenient way of working with arrays. package main import &quot;fmt&quot; func main() { var a [2]string a[0] = &quot;Hello&quot; a[1] = &quot;World&quot; fmt.Println(a[0], a[1]) fmt.Println(a) var b [2]int b[0] = 1 b[1] = 2 fmt.Printf(&quot;%T,%v&quot;, b, b) } Slices A slice points to an array of values and also includes a length. []T is a slice with elements of type T. package main import &quot;fmt&quot; func main() { var a = [...]int{1, 2, 3, 4, 5, 6, 7} var s1 = a[1:3] for i := 0; i &lt; len(s1); i++ { fmt.Println(s1[i]) } s1[0] = 10 fmt.Println(a) fmt.Println(s1) } Slicing slices Slices can be re-sliced, creating a new slice value that points to the same array. The expression s[lo:hi] evaluates to a slice of the elements from lo through hi-1, inclusive. Thus s[lo:lo] is empty and s[lo:lo+1] has one element. package main import &quot;fmt&quot; func main() { s := []int{2, 3, 5, 7, 11, 13} fmt.Println(&quot;s ==&quot;, s) fmt.Println(&quot;s[1:4] ==&quot;, s[1:4]) // missing low index implies 0 fmt.Println(&quot;s[:3] ==&quot;, s[:3]) // missing high index implies len(s) fmt.Println(&quot;s[4:] ==&quot;, s[4:]) } Making slices Slices are created with the make function. It works by allocating a zeroed array and returning a slice that refers to that array: a := make([]int, 5) // len(a)=5 To specify a capacity, pass a third argument to make: b := make([]int, 0, 5) // len(b)=0, cap(b)=5 b = b[:cap(b)] // len(b)=5, cap(b)=5 b = b[1:] // len(b)=4, cap(b)=4 package main import &quot;fmt&quot; func main() { a := make([]int, 5) b := make([]int, 0, 5) c := a[:3] fmt.Println(c) d := b[:2] fmt.Println(d) } Nil slices The zero value of a slice is nil. A nil slice has a length and capacity of 0. package main import &quot;fmt&quot; func main() { var z [1]int fmt.Println(z, len(z), cap(z)) //if z == nil { fmt.Println(&quot;nil!&quot;) //} } Adding elements to a slice It is common to append new elements to a slice, and so Go provides a built-in append function. The documentation of the built-in package describes append. func append(s []T, vs ...T) []T The first parameter s of append is a slice of type T, and the rest are T values to append to the slice. The resulting value of append is a slice containing all the elements of the original slice plus the provided values. If the backing array of s is too small to fit all the given values a bigger array will be allocated. The returned slice will point to the newly allocated array. package main import &quot;fmt&quot; func main() { var a []int printSlice(&quot;a&quot;, a) // append works on nil slices. a = append(a, 0) printSlice(&quot;a&quot;, a) // the slice grows as needed. a = append(a, 1) printSlice(&quot;a&quot;, a) // we can add more than one element at a time. a = append(a, 2, 3, 4) printSlice(&quot;a&quot;, a) } func printSlice(s string, x []int) { fmt.Printf(&quot;%s len=%d cap=%d %v\n&quot;, s, len(x), cap(x), x) } Range The range form of the for loop iterates over a slice or map. package main import &quot;fmt&quot; var pow = []int{1, 2, 4, 8, 16, 32, 64, 128} func main() { for i, v := range pow { fmt.Printf(&quot;2**%d = %d\n&quot;, i, v) } } Range continued You can skip the index or value by assigning to _. If you only want the index, drop the “, value” entirely. package main import &quot;fmt&quot; func main() { pow := make([]float64, 10) for i := range pow { // invalid operation: 1 &lt;&lt; uint(i) (shift of type float64) // pow[i] = float64(1&lt;&lt;uint(i)) + 0.1 j := 1 &lt;&lt; uint(i) pow[i] = float64(j) + 0.1 } for i := range pow { fmt.Printf(&quot;%d\n&quot;, i) } } Maps A map maps keys to values. Maps must be created with make (not new) before use; the nil map is empty and cannot be assigned to. package main import &quot;fmt&quot; type Vertex struct { Lat, Long float64 } var m map[string]Vertex func main() { m = make(map[string]Vertex) m[&quot;Bell Labs&quot;] = Vertex{ 40.68433, -74.39967, } fmt.Println(m[&quot;Bell Labs&quot;]) } Map literals Map literals are like struct literals, but the keys are required. package main import &quot;fmt&quot; type Vertex struct { Lat, Long float64 } var m = map[string]Vertex{ &quot;Bell Labs&quot;: Vertex{ 40.68433, -74.39967, }, &quot;Google&quot;: Vertex{ 37.42202, -122.08408, }, } func main() { fmt.Println(m) m2 := make(map[int]string) for i := 0; i &lt; 10; i++ { m2[i] = &quot;Hello&quot; } } Map literals continued If the top-level type is just a type name, you can omit it from the elements of the literal. package main import &quot;fmt&quot; type Vertex struct { Lat, Long float64 } var m = map[string]Vertex{ &quot;Bell Labs&quot;: {40.68433, -74.39967}, &quot;Google&quot;: {37.42202, -122.08408}, } func main() { fmt.Println(m) } Mutating Maps Insert or update an element in map m: m[key] = elem Retrieve an element: elem = m[key] Delete an element: delete(m, key) Test that a key is present with a two-value assignment: elem, ok = m[key] If key is in m, ok is true. If not, ok is false and elem is the zero value for the map’s element type. Similarly, when reading from a map if the key is not present the result is the zero value for the map’s element type. Note: if elem or ok have not yet been declared you could use a short declaration form: elem, ok := m[key] package main import &quot;fmt&quot; func main() { m := make(map[string]int) m[&quot;Answer&quot;] = 42 fmt.Println(&quot;The value:&quot;, m[&quot;Answer&quot;]) m[&quot;Answer&quot;] = 48 fmt.Println(&quot;The value:&quot;, m[&quot;Answer&quot;]) delete(m, &quot;Answer&quot;) fmt.Println(&quot;The value:&quot;, m[&quot;Answer&quot;]) v, ok := m[&quot;Answer&quot;] fmt.Println(&quot;The value:&quot;, v, &quot;Present?&quot;, ok) m[&quot;Question&quot;] = 100 v, ok := m[&quot;Question&quot;] fmt.Println(&quot;The value:&quot;, v, &quot;Present?&quot;, ok) } Function values Functions are values too. package main import ( &quot;fmt&quot; &quot;math&quot; ) func main() { hypot := func(x, y float64) float64 { return math.Sqrt(x*x + y*y) } fmt.Println(hypot(3, 4)) } Function closures Go functions may be closures. A closure is a function value that references variables from outside its body. The function may access and assign to the referenced variables; in this sense the function is “bound” to the variables. For example, the adder function returns a closure. Each closure is bound to its own sum variable. package main import &quot;fmt&quot; func adder() func(int) int { sum := 0 return func(x int) int { sum += x return sum } } func main() { pos, neg := adder(), adder() for i := 0; i &lt; 10; i++ { fmt.Println( pos(i), neg(-2*i), ) } } References Tour of Go,http://tour.golang.org/" />
+<link rel="canonical" href="https://blog.codefarm.me/2015/09/17/tour-of-go-basics/" />
+<meta property="og:url" content="https://blog.codefarm.me/2015/09/17/tour-of-go-basics/" />
+<meta property="og:site_name" content="CODE FARM" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-09-17T19:08:50+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Tour of Go - Basics" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2015-09-17T19:08:50+08:00","datePublished":"2015-09-17T19:08:50+08:00","description":"Packages, variables, and function Packages Every Go program is made up of packages. Programs start running in package main. This program is using the packages with import paths &quot;fmt&quot; and &quot;math/rand&quot;. By convention, the package name is the same as the last element of the import path. For instance, the &quot;math/rand&quot; package comprises files that begin with the statement package rand. Note: the environment in which these programs are executed is deterministic, so rand.Intn will always return the same number. (To see a different number, seed the number generator; see rand.Seed.) package main import ( &quot;fmt&quot; &quot;math/rand&quot; ) func main() { fmt.Println(&quot;My favorite number is &quot;, rand.Intn(10)) //fmt.Println(rand.Seed(1)) } Imports This code groups the imports into a parenthesized, “factored” import statement. You can also write multiple import statements, like: import &quot;fmt&quot; import &quot;math&quot; But it is good style to use the factored import statement. package main import ( &quot;fmt&quot; &quot;math&quot; ) func main() { fmt.Printf(&quot;Now you have %g problems.&quot;, math.Nextafter(2, 3)) } Exported names After importing a package, you can refer to the names it exports. In Go, a name is exported if it begins with a capital letter. Foo is an exported name, as is FOO. The name foo is not exported. Run the code. Then rename math.pi to math.Pi and try it again. package main import ( &quot;fmt&quot; &quot;math&quot; ) func main() { fmt.Println(math.Pi) } Functions A function can take zero or more arguments. In this example, add takes two parameters of type int. Notice that the type comes after the variable name. package main import &quot;fmt&quot; func add(x int, y int) int { return x + y } func main() { fmt.Println(add(42, 13)) } Functions continued When two or more consecutive named function parameters share a type, you can omit the type from all but the last. In this example, we shortened x int, y int to x, y int package main import &quot;fmt&quot; func add(x, y int) int { return x + y } func main() { fmt.Println(add(42, 13)) } Multiple results A function can return any number of results. The swap function returns two strings. package main import &quot;fmt&quot; func swap(x, y string) (string, string) { return y, x } func main() { a, b := swap(&quot;hello&quot;, &quot;world&quot;) fmt.Println(a, b) } Named return values Go’s return values may be named and act just like variables. These names should be used to document the meaning of the return values. A return statement without arguments returns the current values of the results. This is known as a “naked” return. Naked return statements should be used only in short functions, as with the example shown here. They can harm readability in longer functions package main import &quot;fmt&quot; func split(sum int) (x, y int) { x = sum * 4 / 9 y = sum - x return } func foo() (x, y, z int) { x = 1 y = 2 z = 3 return } func main() { fmt.Println(split(17)) fmt.Println(foo()) } Variables The var statement declares a list of variables; as in function argument lists, the type is last. A var statement can be at package or function level. We see both in this example. package main import &quot;fmt&quot; var c, python, java bool func main() { var i int fmt.Println(i, c, python, java) } Variables with initializers A var declaration can include initializers, one per variable. If an initializer is present, the type can be omitted; the variable will take the type of the initializer. package main import &quot;fmt&quot; var i, j = 1, 2 var x, y = &quot;hello&quot;, 100 func main() { var c, python, java = true, false, &quot;no!&quot; fmt.Println(i, j, c, python, java) fmt.Println(x, y) } Short variable declarations# Inside a function, the := short assignment statement can be used in place of a var declaration with implicit type. Outside a function, every statement begins with a keyword (var, func, and so on) and so the := construct is not available. package main import &quot;fmt&quot; func main() { var i, j int = 1, 2 k := 3 c, python, java := true, false, &quot;no!&quot; fmt.Println(i, j, k, c, python, java) } Basic types Go’s basic types are bool string int int8 int16 int32 int64 uint uint8 uint16 uint32 uint64 uintptr byte // alias for uint8 rune // alias for int32 // represents a Unicode code point float32 float64 complex64 complex128 The example shows variables of several types, and also that variable declarations may be “factored” into blocks, as with import statements. The int, uint, and uintptr types are usually 32 bits wide on 32-bit systems and 64 bits wide on 64-bit systems. When you need an integer value you should use int unless you have a specific reason to use a sized or unsigned integer type. package main import ( &quot;fmt&quot; &quot;math/cmplx&quot; ) var ( ToBe bool = false MaxInt uint64 = 1&lt;&lt;64 - 1 z complex128 = cmplx.Sqrt(-5 + 12i) ) func main() { const f = &quot;%T(%v)\\n&quot; fmt.Printf(f, ToBe, ToBe) fmt.Printf(f, MaxInt, MaxInt) fmt.Printf(f, z, z) fmt.Printf(f, f) } Zero values Variables declared without an explicit initial value are given their zero value. The zero value is: 0 for numeric types, false the boolean type, and “” (the empty string) for strings. package main import &quot;fmt&quot; func main() { var i int var f float64 var b bool var s string fmt.Printf(&quot;%v %v %v %v\\n&quot;, i, f, b, s) } Type conversions The expression T(v) converts the value v to the type T. Some numeric conversions: var i int = 42 var f float64 = float64(i) var u uint = uint(f) Or, put more simply: i := 42 f := float64(i) u := uint(f) Unlike in C, in Go assignment between items of different type requires an explicit conversion. Try removing the float64 or int conversions in the example and see what happens. package main import ( &quot;fmt&quot; &quot;math&quot; ) func main() { var x, y int = 3, 4 var f float64 = math.Sqrt(float64(x*x + y*y)) var z int = int(f) fmt.Println(z, y, z) } Type inference When declaring a variable without specifying an explicit type (either by using the := syntax or var = expression syntax), the variable’s type is inferred from the value on the right hand side. When the right hand side of the declaration is typed, the new variable is of that same type: var i int j := i // j is an int But when the right hand side contains an untyped numeric constant, the new variable may be an int, float64, or complex128 depending on the precision of the constant: i := 42 // int f := 3.142 // float64 g := 0.867 + 0.5i // complex128 Try changing the initial value of v in the example code and observe how its type is affected. package main import &quot;fmt&quot; func main() { v := &quot;pgg&quot; // change me! fmt.Printf(&quot;v is of type %T\\n&quot;, v) } Constants Constants are declared like variables, but with the const keyword. Constants can be character, string, boolean, or numeric values. Constants cannot be declared using the := syntax. package main import &quot;fmt&quot; const Pi = 3.14 func main() { const World = &quot;世界&quot; fmt.Println(&quot;Hello&quot;, World) fmt.Println(&quot;Happy&quot;, Pi, &quot;Day&quot;) const Truth = true fmt.Println(&quot;Go rules?&quot;, Truth) } Numeric Constants Numeric constants are high-precision values. An untyped constant takes the type needed by its context. Try printing needInt(Big) too. package main import &quot;fmt&quot; const ( Big = 1 &lt;&lt; 100 Small = Big &gt;&gt; 99 ) func needInt(x int) int { return x*10 + 1 } func needFloat(x float64) float64 { return x * 0.1 } func main() { fmt.Println(needInt(Small)) fmt.Println(needFloat(Small)) fmt.Println(needFloat(Big)) fmt.Println(needInt(int(Big))) } Flow control statements: for, if, else, switch and defe For Go has only one looping construct, the for loop. The basic for loop looks as it does in C or Java, except that the ( ) are gone (they are not even optional) and the { } are required. package main import &quot;fmt&quot; func main() { sum := 0 for i := 0; i &lt; 10; i++ { sum += 1 } fmt.Println(sum) } For continued As in C or Java, you can leave the pre and post statements empty. package main import &quot;fmt&quot; func main() { sum := 1 for ; sum &lt; 1000 ; { sum += sum } fmt.Println(sum) } For is Go’s “while” At that point you can drop the semicolons: C’s while is spelled for in Go. package main import &quot;fmt&quot; func main() { sum := 1 for sum &lt; 1000 { sum += sum } fmt.Println(sum) } Forever If you omit the loop condition it loops forever, so an infinite loop is compactly expressed. package main import &quot;fmt&quot; func main() { var i int = 10 for { fmt.Println(&quot;Hello TOM!&quot;) i = i - 1 if i &lt; 0 { break } } } If The if statement looks as it does in C or Java, except that the ( ) are gone and the { } are required. (Sound familiar?) package main import ( &quot;fmt&quot; &quot;math&quot; ) func sqrt(x float64) string { if x &lt; 0 { return sqrt(-x) + &quot;i&quot; } return fmt.Sprint(math.Sqrt(x)) } func main() { fmt.Println(sqrt(2), sqrt(-4)) } If with a short statement Like for, the if statement can start with a short statement to execute before the condition. Variables declared by the statement are only in scope until the end of the if. (Try using v in the last return statement.) package main import ( &quot;fmt&quot; &quot;math&quot; ) func pow(x, n, lim float64) float64 { v := 1 if v := math.Pow(x, n); v &lt; lim { fmt.Println(v) return v } fmt.Println(v) return lim } func main() { fmt.Println( pow(3, 2, 10), pow(3, 3, 20)) } If and else Variables declared inside an if short statement are also available inside any of the else blocks. package main import ( &quot;fmt&quot; &quot;math&quot; ) func pow(x, n, lim float64) float64 { if v := math.Pow(x, n); v &lt; lim { return v } else { x := 100 fmt.Println(x) fmt.Printf(&quot;%g &gt;= %g\\n&quot;, v, lim) } // can&#39;t use v here, though return lim } func main() { fmt.Println( pow(3, 2, 10), pow(3, 3, 20), ) } Switch You probably knew what switch was going to look like. A case body breaks automatically, unless it ends with a fallthrough statement. package main import ( &quot;fmt&quot; &quot;runtime&quot; ) func main() { fmt.Print(&quot;Go runs on &quot;) switch os := runtime.GOOS; os { case &quot;darwin&quot;: fmt.Println(&quot;OS X.&quot;) case &quot;linux&quot;: fmt.Println(&quot;Linux.&quot;) default: // freebsd, openbsd, // plan9, windows... fmt.Print(&quot;%s.&quot;, os) } } Switch evaluation order Switch cases evaluate cases from top to bottom, stopping when a case succeeds. (For example, switch i { case 0: case f(): } does not call f if i==0.) Note: Time in the Go playground always appears to start at 2009-11-10 23:00:00 UTC, a value whose significance is left as an exercise for the reader. package main import ( &quot;fmt&quot; &quot;time&quot; ) func main() { fmt.Println(&quot;When&#39;s Saturday?&quot;) today := time.Now().Weekday() switch time.Saturday { case today + 0: fmt.Println(&quot;Today.&quot;) case today + 1: fmt.Println(&quot;Tomorrow.&quot;) case today + 2: fmt.Println(&quot;In two days.&quot;) default: fmt.Println(&quot;Too far away.&quot;) } } Switch with no condition Switch without a condition is the same as switch true. This construct can be a clean way to write long if-then-else chains. package main import ( &quot;fmt&quot; &quot;time&quot; ) func main() { t := time.Now() switch { case t.Hour() &lt; 12: fmt.Println(&quot;Good morning!&quot;) case t.Hour() &lt; 17: fmt.Println(&quot;Good afternoon!&quot;) default: fmt.Println(&quot;Good evening.&quot;) } } Defer A defer statement defers the execution of a function until the surrounding function returns. The deferred call’s arguments are evaluated immediately, but the function call is not executed until the surrounding function returns. package main import &quot;fmt&quot; func main() { defer fmt.Println(&quot;world&quot;) fmt.Println(&quot;hello&quot;) } Stacking defers Deferred function calls are pushed onto a stack. When a function returns, its deferred calls are executed in last-in-first-out order. To learn more about defer statements read this blog post. package main import &quot;fmt&quot; func main() { fmt.Println(&quot;counting&quot;) for i := 0; i &lt; 10; i++ { defer fmt.Println(i) } fmt.Println(&quot;done&quot;) } More types: structs, slices, and map Pointers Go has pointers. A pointer holds the memory address of a variable. The type *T is a pointer to a T value. Its zero value is nil. var p *int The &amp; operator generates a pointer to its operand. i := 42 p = &amp;i The * operator denotes the pointer’s underlying value. fmt.Println(*p) // read i through the pointer p *p = 21 // set i through the pointer p This is known as “dereferencing” or “indirecting”. Unlike C, Go has no pointer arithmetic. package main import &quot;fmt&quot; func main() { var p *int i := 10 p = &amp;i *p += 10 fmt.Println(p, *p, &amp;p) } Structs A struct is a collection of fields. (And a type declaration does what you’d expect.) package main import &quot;fmt&quot; type Vertex struct { X int Y int } type Foo struct { B int A, R int } func main() { fmt.Println(Vertex{1, 2}) var foo = Foo{1, 2, 3} fmt.Println(foo) } Struct Fields Struct fields are accessed using a dot. package main import &quot;fmt&quot; type Vertex struct { X int Y int } func main() { v := Vertex{1, 2} v.X = 4 fmt.Println(v) } Pointers to structs Struct fields can be accessed through a struct pointer. The indirection through the pointer is transparent. package main import &quot;fmt&quot; type Vertex struct { X int Y int } func main() { v := Vertex{1, 2} p := &amp;v p.X = 1e9 fmt.Println(v) } Struct Literals A struct literal denotes a newly allocated struct value by listing the values of its fields. You can list just a subset of fields by using the Name: syntax. (And the order of named fields is irrelevant.) The special prefix &amp; returns a pointer to the struct value. package main import &quot;fmt&quot; type Vertex struct { X, Y int } var ( v1 = Vertex{1, 2} // has type Vertex v2 = Vertex{X: 1} // Y:0 is implicit v3 = Vertex{} // X:0 and Y:0 p = &amp;Vertex{1, 2} // has type *Vertex ) func main() { fmt.Println(v1, p, v2, v3) var v4 = Vertex{Y: 10, X: 11} fmt.Println(v4, &amp;v4, *(&amp;v4)) } Arrays The type [n]T is an array of n values of type T. The expression var a [10]int declares a variable a as an array of ten integers. An array’s length is part of its type, so arrays cannot be resized. This seems limiting, but don’t worry; Go provides a convenient way of working with arrays. package main import &quot;fmt&quot; func main() { var a [2]string a[0] = &quot;Hello&quot; a[1] = &quot;World&quot; fmt.Println(a[0], a[1]) fmt.Println(a) var b [2]int b[0] = 1 b[1] = 2 fmt.Printf(&quot;%T,%v&quot;, b, b) } Slices A slice points to an array of values and also includes a length. []T is a slice with elements of type T. package main import &quot;fmt&quot; func main() { var a = [...]int{1, 2, 3, 4, 5, 6, 7} var s1 = a[1:3] for i := 0; i &lt; len(s1); i++ { fmt.Println(s1[i]) } s1[0] = 10 fmt.Println(a) fmt.Println(s1) } Slicing slices Slices can be re-sliced, creating a new slice value that points to the same array. The expression s[lo:hi] evaluates to a slice of the elements from lo through hi-1, inclusive. Thus s[lo:lo] is empty and s[lo:lo+1] has one element. package main import &quot;fmt&quot; func main() { s := []int{2, 3, 5, 7, 11, 13} fmt.Println(&quot;s ==&quot;, s) fmt.Println(&quot;s[1:4] ==&quot;, s[1:4]) // missing low index implies 0 fmt.Println(&quot;s[:3] ==&quot;, s[:3]) // missing high index implies len(s) fmt.Println(&quot;s[4:] ==&quot;, s[4:]) } Making slices Slices are created with the make function. It works by allocating a zeroed array and returning a slice that refers to that array: a := make([]int, 5) // len(a)=5 To specify a capacity, pass a third argument to make: b := make([]int, 0, 5) // len(b)=0, cap(b)=5 b = b[:cap(b)] // len(b)=5, cap(b)=5 b = b[1:] // len(b)=4, cap(b)=4 package main import &quot;fmt&quot; func main() { a := make([]int, 5) b := make([]int, 0, 5) c := a[:3] fmt.Println(c) d := b[:2] fmt.Println(d) } Nil slices The zero value of a slice is nil. A nil slice has a length and capacity of 0. package main import &quot;fmt&quot; func main() { var z [1]int fmt.Println(z, len(z), cap(z)) //if z == nil { fmt.Println(&quot;nil!&quot;) //} } Adding elements to a slice It is common to append new elements to a slice, and so Go provides a built-in append function. The documentation of the built-in package describes append. func append(s []T, vs ...T) []T The first parameter s of append is a slice of type T, and the rest are T values to append to the slice. The resulting value of append is a slice containing all the elements of the original slice plus the provided values. If the backing array of s is too small to fit all the given values a bigger array will be allocated. The returned slice will point to the newly allocated array. package main import &quot;fmt&quot; func main() { var a []int printSlice(&quot;a&quot;, a) // append works on nil slices. a = append(a, 0) printSlice(&quot;a&quot;, a) // the slice grows as needed. a = append(a, 1) printSlice(&quot;a&quot;, a) // we can add more than one element at a time. a = append(a, 2, 3, 4) printSlice(&quot;a&quot;, a) } func printSlice(s string, x []int) { fmt.Printf(&quot;%s len=%d cap=%d %v\\n&quot;, s, len(x), cap(x), x) } Range The range form of the for loop iterates over a slice or map. package main import &quot;fmt&quot; var pow = []int{1, 2, 4, 8, 16, 32, 64, 128} func main() { for i, v := range pow { fmt.Printf(&quot;2**%d = %d\\n&quot;, i, v) } } Range continued You can skip the index or value by assigning to _. If you only want the index, drop the “, value” entirely. package main import &quot;fmt&quot; func main() { pow := make([]float64, 10) for i := range pow { // invalid operation: 1 &lt;&lt; uint(i) (shift of type float64) // pow[i] = float64(1&lt;&lt;uint(i)) + 0.1 j := 1 &lt;&lt; uint(i) pow[i] = float64(j) + 0.1 } for i := range pow { fmt.Printf(&quot;%d\\n&quot;, i) } } Maps A map maps keys to values. Maps must be created with make (not new) before use; the nil map is empty and cannot be assigned to. package main import &quot;fmt&quot; type Vertex struct { Lat, Long float64 } var m map[string]Vertex func main() { m = make(map[string]Vertex) m[&quot;Bell Labs&quot;] = Vertex{ 40.68433, -74.39967, } fmt.Println(m[&quot;Bell Labs&quot;]) } Map literals Map literals are like struct literals, but the keys are required. package main import &quot;fmt&quot; type Vertex struct { Lat, Long float64 } var m = map[string]Vertex{ &quot;Bell Labs&quot;: Vertex{ 40.68433, -74.39967, }, &quot;Google&quot;: Vertex{ 37.42202, -122.08408, }, } func main() { fmt.Println(m) m2 := make(map[int]string) for i := 0; i &lt; 10; i++ { m2[i] = &quot;Hello&quot; } } Map literals continued If the top-level type is just a type name, you can omit it from the elements of the literal. package main import &quot;fmt&quot; type Vertex struct { Lat, Long float64 } var m = map[string]Vertex{ &quot;Bell Labs&quot;: {40.68433, -74.39967}, &quot;Google&quot;: {37.42202, -122.08408}, } func main() { fmt.Println(m) } Mutating Maps Insert or update an element in map m: m[key] = elem Retrieve an element: elem = m[key] Delete an element: delete(m, key) Test that a key is present with a two-value assignment: elem, ok = m[key] If key is in m, ok is true. If not, ok is false and elem is the zero value for the map’s element type. Similarly, when reading from a map if the key is not present the result is the zero value for the map’s element type. Note: if elem or ok have not yet been declared you could use a short declaration form: elem, ok := m[key] package main import &quot;fmt&quot; func main() { m := make(map[string]int) m[&quot;Answer&quot;] = 42 fmt.Println(&quot;The value:&quot;, m[&quot;Answer&quot;]) m[&quot;Answer&quot;] = 48 fmt.Println(&quot;The value:&quot;, m[&quot;Answer&quot;]) delete(m, &quot;Answer&quot;) fmt.Println(&quot;The value:&quot;, m[&quot;Answer&quot;]) v, ok := m[&quot;Answer&quot;] fmt.Println(&quot;The value:&quot;, v, &quot;Present?&quot;, ok) m[&quot;Question&quot;] = 100 v, ok := m[&quot;Question&quot;] fmt.Println(&quot;The value:&quot;, v, &quot;Present?&quot;, ok) } Function values Functions are values too. package main import ( &quot;fmt&quot; &quot;math&quot; ) func main() { hypot := func(x, y float64) float64 { return math.Sqrt(x*x + y*y) } fmt.Println(hypot(3, 4)) } Function closures Go functions may be closures. A closure is a function value that references variables from outside its body. The function may access and assign to the referenced variables; in this sense the function is “bound” to the variables. For example, the adder function returns a closure. Each closure is bound to its own sum variable. package main import &quot;fmt&quot; func adder() func(int) int { sum := 0 return func(x int) int { sum += x return sum } } func main() { pos, neg := adder(), adder() for i := 0; i &lt; 10; i++ { fmt.Println( pos(i), neg(-2*i), ) } } References Tour of Go,http://tour.golang.org/","headline":"Tour of Go - Basics","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.codefarm.me/2015/09/17/tour-of-go-basics/"},"url":"https://blog.codefarm.me/2015/09/17/tour-of-go-basics/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css"><!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SN88FJ18E5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-SN88FJ18E5');
+    </script></head>
+  <body>
+    <header class="c-header">
+  <div class="o-container">
+    <a class="c-header-title" href="/">CODE FARM</a>
+    <button class="c-header-nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+      <span class="c-header-nav-toggle-icon"></span>
+    </button>
+    <div class="c-header-nav-wrapper" id="nav-wrapper">
+      <nav class="c-header-nav">
+        <a href="/">Home</a>
+        <a href="/categories/">Category</a>
+        <a href="/tags/">Tag</a>
+        <a href="/archives/">Archive</a>
+        <a href="/about/">About</a>
+        <a href="https://resume.github.io/?looogos" target="_blank">R&eacute;sum&eacute;</a>
+      </nav>
+    </div>
+  </div>
+  
+
+
+
+<div class="o-container">
+  <div class="c-banner">
+    <img src="/assets/images/galaxy.svg" alt="Galaxy background" class="c-banner-bg">
+    <div class="c-banner-quote">
+      <p>"The Renaissance was a time when art, science, and philosophy flourished."</p>
+      <cite>- Michelangelo</cite>
+    </div>
+  </div>
+</div>
+</header>
+
+    <main class="o-container">
+      <article class="c-post">
+  <header class="c-post-header">
+    <h1 class="c-post-title">Tour of Go - Basics</h1><p class="c-post-meta">17 Sep 2015</p>
+  </header>
+
+  <div class="c-post-content">
+    <h2 id="packages-variables-and-function">Packages, variables, and function</h2>
+
+<h3 id="packages">Packages</h3>
+
+<p>Every Go program is made up of packages.</p>
+
+<p>Programs start running in package <code class="language-plaintext highlighter-rouge">main</code>.</p>
+
+<p>This program is using the packages with import paths <code class="language-plaintext highlighter-rouge">"fmt"</code> and <code class="language-plaintext highlighter-rouge">"math/rand"</code>.</p>
+
+<p>By convention, the package name is the same as the last element of the import path. For instance, the <code class="language-plaintext highlighter-rouge">"math/rand"</code> package comprises files that begin with the statement package <code class="language-plaintext highlighter-rouge">rand</code>.</p>
+
+<p><strong><em>Note</em></strong>: the environment in which these programs are executed is deterministic, so <code class="language-plaintext highlighter-rouge">rand.Intn</code> will always return the same number. (To see a different number, seed the number generator; see <code class="language-plaintext highlighter-rouge">rand.Seed</code>.)</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+    <span class="s">"fmt"</span>
+    <span class="s">"math/rand"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"My favorite number is "</span><span class="p">,</span> <span class="n">rand</span><span class="o">.</span><span class="n">Intn</span><span class="p">(</span><span class="m">10</span><span class="p">))</span>
+    <span class="c">//fmt.Println(rand.Seed(1))</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="imports">Imports</h3>
+
+<p>This code groups the imports into a parenthesized, “factored” import statement.</p>
+
+<p>You can also write multiple import statements, like:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import "fmt"
+import "math"
+</code></pre></div></div>
+
+<p>But it is good style to use the factored import statement.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+    <span class="s">"fmt"</span>
+    <span class="s">"math"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"Now you have %g problems."</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">Nextafter</span><span class="p">(</span><span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">))</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="exported-names">Exported names</h3>
+
+<p>After importing a package, you can refer to the names it exports.</p>
+
+<p>In Go, a name is exported if it begins with <em>a capital letter</em>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Foo</code> is an exported name, as is <code class="language-plaintext highlighter-rouge">FOO</code>. The name foo is not exported.</p>
+
+<p>Run the code. Then rename <code class="language-plaintext highlighter-rouge">math.pi</code> to <code class="language-plaintext highlighter-rouge">math.Pi</code> and try it again.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+    <span class="s">"fmt"</span>
+    <span class="s">"math"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">Pi</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="functions">Functions</h3>
+
+<p>A function can take zero or more arguments.</p>
+
+<p>In this example, add takes two parameters of type int.</p>
+
+<p>Notice that the type comes after the variable name.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">add</span><span class="p">(</span><span class="n">x</span> <span class="kt">int</span><span class="p">,</span> <span class="n">y</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">add</span><span class="p">(</span><span class="m">42</span><span class="p">,</span> <span class="m">13</span><span class="p">))</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="functions-continued">Functions continued</h3>
+
+<p>When two or more consecutive named function parameters share a type, you can omit the type from all but the last.</p>
+
+<p>In this example, we shortened</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x int, y int
+</code></pre></div></div>
+
+<p>to</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x, y int
+</code></pre></div></div>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">add</span><span class="p">(</span><span class="m">42</span><span class="p">,</span> <span class="m">13</span><span class="p">))</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="multiple-results">Multiple results</h3>
+
+<p>A function can return any number of results.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">swap</code> function returns two strings.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">swap</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">:=</span> <span class="n">swap</span><span class="p">(</span><span class="s">"hello"</span><span class="p">,</span> <span class="s">"world"</span><span class="p">)</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="named-return-values">Named return values</h3>
+
+<p>Go’s <code class="language-plaintext highlighter-rouge">return</code> values may be named and act just like variables.</p>
+
+<p>These names should be used to document the meaning of the return values.</p>
+
+<p>A return statement without arguments returns the current values of the results. This is known as a “naked” return.</p>
+
+<p>Naked return statements should be used only in short functions, as with the example shown here. They can harm readability in longer functions</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">split</span><span class="p">(</span><span class="n">sum</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">x</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">*</span> <span class="m">4</span> <span class="o">/</span> <span class="m">9</span>
+	<span class="n">y</span> <span class="o">=</span> <span class="n">sum</span> <span class="o">-</span> <span class="n">x</span>
+	<span class="k">return</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">foo</span><span class="p">()</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">x</span> <span class="o">=</span> <span class="m">1</span>
+	<span class="n">y</span> <span class="o">=</span> <span class="m">2</span>
+	<span class="n">z</span> <span class="o">=</span> <span class="m">3</span>
+	<span class="k">return</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="m">17</span><span class="p">))</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">foo</span><span class="p">())</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="variables">Variables</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">var</code> statement declares a list of variables; as in function argument lists, the type is last.</p>
+
+<p>A <code class="language-plaintext highlighter-rouge">var</code> statement can be at package or function level. We see both in this example.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">var</span> <span class="n">c</span><span class="p">,</span> <span class="n">python</span><span class="p">,</span> <span class="n">java</span> <span class="kt">bool</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="n">i</span> <span class="kt">int</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">python</span><span class="p">,</span> <span class="n">java</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="variables-with-initializers">Variables with initializers</h3>
+
+<p>A <code class="language-plaintext highlighter-rouge">var</code> declaration can include initializers, one per variable.</p>
+
+<p>If an initializer is present, the type can be omitted; the variable will take the type of the initializer.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">var</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="m">1</span><span class="p">,</span> <span class="m">2</span>
+<span class="k">var</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="s">"hello"</span><span class="p">,</span> <span class="m">100</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">c</span><span class="p">,</span> <span class="n">python</span><span class="p">,</span> <span class="n">java</span> <span class="o">=</span> <span class="no">true</span><span class="p">,</span> <span class="no">false</span><span class="p">,</span> <span class="s">"no!"</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">python</span><span class="p">,</span> <span class="n">java</span><span class="p">)</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="short-variable-declarations">Short variable declarations#</h3>
+
+<p>Inside a function, the <em>:=</em> short assignment statement can be used in place of a <code class="language-plaintext highlighter-rouge">var</code> declaration with implicit type.</p>
+
+<p>Outside a function, every statement begins with a keyword (<code class="language-plaintext highlighter-rouge">var</code>, <code class="language-plaintext highlighter-rouge">func</code>, and so on) and so the <em>:=</em> construct is not available.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="kt">int</span> <span class="o">=</span> <span class="m">1</span><span class="p">,</span> <span class="m">2</span>
+	<span class="n">k</span> <span class="o">:=</span> <span class="m">3</span>
+	<span class="n">c</span><span class="p">,</span> <span class="n">python</span><span class="p">,</span> <span class="n">java</span> <span class="o">:=</span> <span class="no">true</span><span class="p">,</span> <span class="no">false</span><span class="p">,</span> <span class="s">"no!"</span>
+
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">python</span><span class="p">,</span> <span class="n">java</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="basic-types">Basic types</h3>
+
+<p>Go’s basic types are</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bool
+
+string
+
+int  int8  int16  int32  int64
+uint uint8 uint16 uint32 uint64 uintptr
+
+byte // alias for uint8
+
+rune // alias for int32
+     // represents a Unicode code point
+
+float32 float64
+
+complex64 complex128
+</code></pre></div></div>
+
+<p>The example shows variables of several types, and also that variable declarations may be “factored” into blocks, as with import statements.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">int</code>, <code class="language-plaintext highlighter-rouge">uint</code>, and <code class="language-plaintext highlighter-rouge">uintptr</code> types are usually 32 bits wide on 32-bit systems and 64 bits wide on 64-bit systems. When you need an integer value you should use <code class="language-plaintext highlighter-rouge">int</code> unless you have a specific reason to use a sized or unsigned integer type.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"math/cmplx"</span>
+<span class="p">)</span>
+
+<span class="k">var</span> <span class="p">(</span>
+	<span class="n">ToBe</span>   <span class="kt">bool</span>       <span class="o">=</span> <span class="no">false</span>
+	<span class="n">MaxInt</span> <span class="kt">uint64</span>     <span class="o">=</span> <span class="m">1</span><span class="o">&lt;&lt;</span><span class="m">64</span> <span class="o">-</span> <span class="m">1</span>
+	<span class="n">z</span>      <span class="kt">complex128</span> <span class="o">=</span> <span class="n">cmplx</span><span class="o">.</span><span class="n">Sqrt</span><span class="p">(</span><span class="o">-</span><span class="m">5</span> <span class="o">+</span> <span class="m">12i</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">const</span> <span class="n">f</span> <span class="o">=</span> <span class="s">"%T(%v)</span><span class="se">\n</span><span class="s">"</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">ToBe</span><span class="p">,</span> <span class="n">ToBe</span><span class="p">)</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">MaxInt</span><span class="p">,</span> <span class="n">MaxInt</span><span class="p">)</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="zero-values">Zero values</h3>
+
+<p>Variables declared without an explicit initial value are given their zero value.</p>
+
+<p>The zero value is:</p>
+
+<blockquote>
+  <p>0 for numeric types,
+false the boolean type, and
+“” (the empty string) for strings.</p>
+</blockquote>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="n">i</span> <span class="kt">int</span>
+    <span class="k">var</span> <span class="n">f</span> <span class="kt">float64</span>
+    <span class="k">var</span> <span class="n">b</span> <span class="kt">bool</span>
+    <span class="k">var</span> <span class="n">s</span> <span class="kt">string</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%v %v %v %v</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="type-conversions">Type conversions</h3>
+
+<p>The expression <code class="language-plaintext highlighter-rouge">T(v)</code> converts the value <code class="language-plaintext highlighter-rouge">v</code> to the type <code class="language-plaintext highlighter-rouge">T</code>.</p>
+
+<p>Some numeric conversions:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var i int = 42
+var f float64 = float64(i)
+var u uint = uint(f)
+</code></pre></div></div>
+
+<p>Or, put more simply:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>i := 42
+f := float64(i)
+u := uint(f)
+</code></pre></div></div>
+
+<p>Unlike in C, in Go assignment between items of different type requires an explicit conversion. Try removing the <code class="language-plaintext highlighter-rouge">float64</code> or <code class="language-plaintext highlighter-rouge">int</code> conversions in the example and see what happens.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"math"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="kt">int</span> <span class="o">=</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span>
+	<span class="k">var</span> <span class="n">f</span> <span class="kt">float64</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">Sqrt</span><span class="p">(</span><span class="kt">float64</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="n">y</span><span class="p">))</span>
+	<span class="k">var</span> <span class="n">z</span> <span class="kt">int</span> <span class="o">=</span> <span class="kt">int</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="type-inference">Type inference</h3>
+
+<p>When declaring a variable without specifying an explicit type (either by using the <code class="language-plaintext highlighter-rouge">:=</code> syntax or <code class="language-plaintext highlighter-rouge">var =</code> expression syntax), the variable’s type is inferred from the value on the right hand side.</p>
+
+<p>When the right hand side of the declaration is typed, the new variable is of that same type:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var i int
+j := i // j is an int
+</code></pre></div></div>
+
+<p>But when the right hand side contains an untyped numeric constant, the new variable may be an <code class="language-plaintext highlighter-rouge">int</code>, <code class="language-plaintext highlighter-rouge">float64</code>, or <code class="language-plaintext highlighter-rouge">complex128</code> depending on the precision of the constant:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>i := 42           // int
+f := 3.142        // float64
+g := 0.867 + 0.5i // complex128
+</code></pre></div></div>
+
+<p>Try changing the initial value of <code class="language-plaintext highlighter-rouge">v</code> in the example code and observe how its type is affected.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">v</span> <span class="o">:=</span> <span class="s">"pgg"</span> <span class="c">// change me!</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"v is of type %T</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="constants">Constants</h3>
+
+<p>Constants are declared like variables, but with the <code class="language-plaintext highlighter-rouge">const</code> keyword.</p>
+
+<p>Constants can be character, string, boolean, or numeric values.</p>
+
+<p>Constants cannot be declared using the := syntax.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">const</span> <span class="n">Pi</span> <span class="o">=</span> <span class="m">3.14</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">const</span> <span class="n">World</span> <span class="o">=</span> <span class="s">"世界"</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Hello"</span><span class="p">,</span> <span class="n">World</span><span class="p">)</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Happy"</span><span class="p">,</span> <span class="n">Pi</span><span class="p">,</span> <span class="s">"Day"</span><span class="p">)</span>
+
+	<span class="k">const</span> <span class="n">Truth</span> <span class="o">=</span> <span class="no">true</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Go rules?"</span><span class="p">,</span> <span class="n">Truth</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="numeric-constants">Numeric Constants</h3>
+
+<p>Numeric constants are high-precision values.</p>
+
+<p>An untyped constant takes the type needed by its context.</p>
+
+<p>Try printing <code class="language-plaintext highlighter-rouge">needInt(Big)</code> too.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">const</span> <span class="p">(</span>
+	<span class="n">Big</span>   <span class="o">=</span> <span class="m">1</span> <span class="o">&lt;&lt;</span> <span class="m">100</span>
+	<span class="n">Small</span> <span class="o">=</span> <span class="n">Big</span> <span class="o">&gt;&gt;</span> <span class="m">99</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">needInt</span><span class="p">(</span><span class="n">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span> <span class="k">return</span> <span class="n">x</span><span class="o">*</span><span class="m">10</span> <span class="o">+</span> <span class="m">1</span> <span class="p">}</span>
+<span class="k">func</span> <span class="n">needFloat</span><span class="p">(</span><span class="n">x</span> <span class="kt">float64</span><span class="p">)</span> <span class="kt">float64</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="m">0.1</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">needInt</span><span class="p">(</span><span class="n">Small</span><span class="p">))</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">needFloat</span><span class="p">(</span><span class="n">Small</span><span class="p">))</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">needFloat</span><span class="p">(</span><span class="n">Big</span><span class="p">))</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">needInt</span><span class="p">(</span><span class="kt">int</span><span class="p">(</span><span class="n">Big</span><span class="p">)))</span>
+<span class="p">}</span></code></pre></figure>
+
+<h2 id="flow-control-statements-for-if-else-switch-and-defe">Flow control statements: for, if, else, switch and defe</h2>
+
+<h3 id="for">For</h3>
+
+<p>Go has only one looping construct, the <code class="language-plaintext highlighter-rouge">for</code> loop.</p>
+
+<p>The basic for loop looks as it does in C or Java, except that the <em>( )</em> are gone (they are not even optional) and the <code class="language-plaintext highlighter-rouge">{ }</code> are required.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">sum</span> <span class="o">:=</span> <span class="m">0</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="n">sum</span> <span class="o">+=</span> <span class="m">1</span>
+	<span class="p">}</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">sum</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="for-continued">For continued</h3>
+
+<p>As in C or Java, you can leave the pre and post statements empty.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">sum</span> <span class="o">:=</span> <span class="m">1</span>
+	<span class="k">for</span> <span class="p">;</span> <span class="n">sum</span> <span class="o">&lt;</span> <span class="m">1000</span> <span class="p">;</span> <span class="p">{</span>
+		<span class="n">sum</span> <span class="o">+=</span> <span class="n">sum</span>
+	<span class="p">}</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">sum</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="for-is-gos-while">For is Go’s “while”</h3>
+
+<p>At that point you can drop the semicolons: C’s while is spelled for in Go.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">sum</span> <span class="o">:=</span> <span class="m">1</span>
+	<span class="k">for</span> <span class="n">sum</span> <span class="o">&lt;</span> <span class="m">1000</span> <span class="p">{</span>
+		<span class="n">sum</span> <span class="o">+=</span> <span class="n">sum</span>
+	<span class="p">}</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">sum</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="forever">Forever</h3>
+
+<p>If you omit the loop condition it loops forever, so an infinite loop is compactly expressed.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">i</span> <span class="kt">int</span> <span class="o">=</span> <span class="m">10</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Hello TOM!"</span><span class="p">)</span>
+		<span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="m">1</span>
+		<span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">0</span> <span class="p">{</span>
+			<span class="k">break</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="if">If</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">if</code> statement looks as it does in C or Java, except that the <em>( )</em> are gone and the <em>{ }</em> are required.</p>
+
+<p>(Sound familiar?)</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"math"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">x</span> <span class="kt">float64</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="m">0</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="s">"i"</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="n">fmt</span><span class="o">.</span><span class="n">Sprint</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">Sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="m">2</span><span class="p">),</span> <span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="m">4</span><span class="p">))</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="if-with-a-short-statement">If with a short statement</h3>
+
+<p>Like for, the <code class="language-plaintext highlighter-rouge">if</code> statement can start with a short statement to execute before the condition.</p>
+
+<p>Variables declared by the statement are only in scope until the end of the <code class="language-plaintext highlighter-rouge">if</code>.</p>
+
+<p>(Try using <code class="language-plaintext highlighter-rouge">v</code> in the last <code class="language-plaintext highlighter-rouge">return</code> statement.)</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"math"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">pow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">lim</span> <span class="kt">float64</span><span class="p">)</span> <span class="kt">float64</span> <span class="p">{</span>
+	<span class="n">v</span> <span class="o">:=</span> <span class="m">1</span>
+	<span class="k">if</span> <span class="n">v</span> <span class="o">:=</span> <span class="n">math</span><span class="o">.</span><span class="n">Pow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="n">lim</span> <span class="p">{</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">v</span>
+	<span class="p">}</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">lim</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span>
+		<span class="n">pow</span><span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">10</span><span class="p">),</span>
+		<span class="n">pow</span><span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">20</span><span class="p">))</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="if-and-else">If and else</h3>
+
+<p>Variables declared inside an <code class="language-plaintext highlighter-rouge">if</code> short statement are also available inside any of the <code class="language-plaintext highlighter-rouge">else</code> blocks.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"math"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">pow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">lim</span> <span class="kt">float64</span><span class="p">)</span> <span class="kt">float64</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="n">v</span> <span class="o">:=</span> <span class="n">math</span><span class="o">.</span><span class="n">Pow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="n">lim</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="n">v</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="n">x</span> <span class="o">:=</span> <span class="m">100</span>
+
+
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%g &gt;= %g</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">lim</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="c">// can't use v here, though</span>
+	<span class="k">return</span> <span class="n">lim</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span>
+		<span class="n">pow</span><span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">10</span><span class="p">),</span>
+		<span class="n">pow</span><span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">20</span><span class="p">),</span>
+	<span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="switch">Switch</h3>
+
+<p>You probably knew what <code class="language-plaintext highlighter-rouge">switch</code> was going to look like.</p>
+
+<p>A case body breaks automatically, unless it ends with a <code class="language-plaintext highlighter-rouge">fallthrough</code> statement.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"runtime"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Print</span><span class="p">(</span><span class="s">"Go runs on "</span><span class="p">)</span>
+	<span class="k">switch</span> <span class="n">os</span> <span class="o">:=</span> <span class="n">runtime</span><span class="o">.</span><span class="n">GOOS</span><span class="p">;</span> <span class="n">os</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="s">"darwin"</span><span class="o">:</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"OS X."</span><span class="p">)</span>
+	<span class="k">case</span> <span class="s">"linux"</span><span class="o">:</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Linux."</span><span class="p">)</span>
+	<span class="k">default</span><span class="o">:</span>
+		<span class="c">// freebsd, openbsd,</span>
+		<span class="c">// plan9, windows...</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Print</span><span class="p">(</span><span class="s">"%s."</span><span class="p">,</span> <span class="n">os</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="switch-evaluation-order">Switch evaluation order</h3>
+
+<p>Switch cases evaluate cases from top to bottom, stopping when a case succeeds.</p>
+
+<p>(For example,</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch i {
+case 0:
+case f():
+}
+</code></pre></div></div>
+
+<p>does not call <code class="language-plaintext highlighter-rouge">f</code> if <code class="language-plaintext highlighter-rouge">i==0</code>.)</p>
+
+<p><strong>Note</strong>: Time in the Go playground always appears to start at 2009-11-10 23:00:00 UTC, a value whose significance is left as an exercise for the reader.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"time"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"When's Saturday?"</span><span class="p">)</span>
+	<span class="n">today</span> <span class="o">:=</span> <span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">()</span><span class="o">.</span><span class="n">Weekday</span><span class="p">()</span>
+	<span class="k">switch</span> <span class="n">time</span><span class="o">.</span><span class="n">Saturday</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="n">today</span> <span class="o">+</span> <span class="m">0</span><span class="o">:</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Today."</span><span class="p">)</span>
+	<span class="k">case</span> <span class="n">today</span> <span class="o">+</span> <span class="m">1</span><span class="o">:</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Tomorrow."</span><span class="p">)</span>
+	<span class="k">case</span> <span class="n">today</span> <span class="o">+</span> <span class="m">2</span><span class="o">:</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"In two days."</span><span class="p">)</span>
+	<span class="k">default</span><span class="o">:</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Too far away."</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Switch with no condition</p>
+
+<p>Switch without a condition is the same as <code class="language-plaintext highlighter-rouge">switch true</code>.</p>
+
+<p>This construct can be a clean way to write long if-then-else chains.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"time"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">t</span> <span class="o">:=</span> <span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">()</span>
+	<span class="k">switch</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="n">t</span><span class="o">.</span><span class="n">Hour</span><span class="p">()</span> <span class="o">&lt;</span> <span class="m">12</span><span class="o">:</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Good morning!"</span><span class="p">)</span>
+	<span class="k">case</span> <span class="n">t</span><span class="o">.</span><span class="n">Hour</span><span class="p">()</span> <span class="o">&lt;</span> <span class="m">17</span><span class="o">:</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Good afternoon!"</span><span class="p">)</span>
+	<span class="k">default</span><span class="o">:</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Good evening."</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="defer">Defer</h3>
+
+<p>A <code class="language-plaintext highlighter-rouge">defer</code> statement defers the execution of a function until the surrounding function returns.</p>
+
+<p>The deferred call’s arguments are evaluated immediately, but the function call is not executed until the surrounding function returns.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">defer</span> <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"world"</span><span class="p">)</span>
+
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"hello"</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="stacking-defers">Stacking defers</h3>
+
+<p>Deferred function calls are pushed onto a stack. When a function returns, its deferred calls are executed in last-in-first-out order.</p>
+
+<p>To learn more about defer statements read this <a href="http://blog.golang.org/defer-panic-and-recover">blog post</a>.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"counting"</span><span class="p">)</span>
+
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="k">defer</span> <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+	<span class="p">}</span>
+
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"done"</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h2 id="more-types-structs-slices-and-map">More types: structs, slices, and map</h2>
+
+<h3 id="pointers">Pointers</h3>
+
+<p>Go has pointers. A pointer holds the memory address of a variable.</p>
+
+<p>The type <code class="language-plaintext highlighter-rouge">*T</code> is a pointer to a T value. Its zero value is <code class="language-plaintext highlighter-rouge">nil</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var p *int
+</code></pre></div></div>
+
+<p>The <em>&amp;</em> operator generates a pointer to its operand.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>i := 42
+p = &amp;i
+</code></pre></div></div>
+
+<p>The <em>*</em> operator denotes the pointer’s underlying value.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fmt.Println(*p) // read i through the pointer p
+*p = 21         // set i through the pointer p
+</code></pre></div></div>
+
+<p>This is known as “dereferencing” or “indirecting”.</p>
+
+<p>Unlike C, Go has no pointer arithmetic.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">p</span> <span class="o">*</span><span class="kt">int</span>
+	<span class="n">i</span> <span class="o">:=</span> <span class="m">10</span>
+	<span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">i</span>
+	<span class="o">*</span><span class="n">p</span> <span class="o">+=</span> <span class="m">10</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">p</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="structs">Structs</h3>
+
+<p>A <code class="language-plaintext highlighter-rouge">struct</code> is a collection of fields.</p>
+
+<p>(And a <code class="language-plaintext highlighter-rouge">type</code> declaration does what you’d expect.)</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">type</span> <span class="n">Vertex</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">X</span> <span class="kt">int</span>
+	<span class="n">Y</span> <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="k">type</span> <span class="n">Foo</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">B</span>    <span class="kt">int</span>
+	<span class="n">A</span><span class="p">,</span> <span class="n">R</span> <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">Vertex</span><span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">})</span>
+	<span class="k">var</span> <span class="n">foo</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">}</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="struct-fields">Struct Fields</h3>
+
+<p>Struct fields are accessed using a <em>dot</em>.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">type</span> <span class="n">Vertex</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">X</span> <span class="kt">int</span>
+	<span class="n">Y</span> <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">v</span> <span class="o">:=</span> <span class="n">Vertex</span><span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">}</span>
+	<span class="n">v</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="m">4</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="pointers-to-structs">Pointers to structs</h3>
+
+<p>Struct fields can be accessed through a struct pointer.</p>
+
+<p>The indirection through the pointer is transparent.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">type</span> <span class="n">Vertex</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">X</span> <span class="kt">int</span>
+	<span class="n">Y</span> <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">v</span> <span class="o">:=</span> <span class="n">Vertex</span><span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">}</span>
+	<span class="n">p</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="n">v</span>
+	<span class="n">p</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="m">1e9</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Struct Literals</p>
+
+<p>A struct literal denotes a newly allocated struct value by listing the values of its fields.</p>
+
+<p>You can list just a subset of fields by using the <em>Name:</em> syntax. (And the order of named fields is irrelevant.)</p>
+
+<p>The special prefix <em>&amp;</em> returns a pointer to the struct value.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">type</span> <span class="n">Vertex</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="p">(</span>
+	<span class="n">v1</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">}</span>  <span class="c">// has type Vertex</span>
+	<span class="n">v2</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">{</span><span class="n">X</span><span class="o">:</span> <span class="m">1</span><span class="p">}</span>  <span class="c">// Y:0 is implicit</span>
+	<span class="n">v3</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">{}</span>      <span class="c">// X:0 and Y:0</span>
+	<span class="n">p</span>  <span class="o">=</span> <span class="o">&amp;</span><span class="n">Vertex</span><span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">}</span> <span class="c">// has type *Vertex</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="p">)</span>
+	<span class="k">var</span> <span class="n">v4</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">{</span><span class="n">Y</span><span class="o">:</span> <span class="m">10</span><span class="p">,</span> <span class="n">X</span><span class="o">:</span> <span class="m">11</span><span class="p">}</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">v4</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">v4</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="o">&amp;</span><span class="n">v4</span><span class="p">))</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="arrays">Arrays</h3>
+
+<p>The type <em>[n]T</em> is an array of n values of type <em>T</em>.</p>
+
+<p>The expression</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var a [10]int
+</code></pre></div></div>
+
+<p>declares a variable <em>a</em> as an array of ten integers.</p>
+
+<p>An array’s length is part of its type, so arrays cannot be resized. This seems limiting, but don’t worry; Go provides a convenient way of working with arrays.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">a</span> <span class="p">[</span><span class="m">2</span><span class="p">]</span><span class="kt">string</span>
+	<span class="n">a</span><span class="p">[</span><span class="m">0</span><span class="p">]</span> <span class="o">=</span> <span class="s">"Hello"</span>
+	<span class="n">a</span><span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="o">=</span> <span class="s">"World"</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="m">0</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="m">1</span><span class="p">])</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+	<span class="k">var</span> <span class="n">b</span> <span class="p">[</span><span class="m">2</span><span class="p">]</span><span class="kt">int</span>
+	<span class="n">b</span><span class="p">[</span><span class="m">0</span><span class="p">]</span> <span class="o">=</span> <span class="m">1</span>
+	<span class="n">b</span><span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="o">=</span> <span class="m">2</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%T,%v"</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="slices">Slices</h3>
+
+<p>A <em>slice</em> points to an <em>array</em> of values and also includes a length.</p>
+
+<p><em>[]T</em> is a slice with elements of type <em>T</em>.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">6</span><span class="p">,</span> <span class="m">7</span><span class="p">}</span>
+	<span class="k">var</span> <span class="n">s1</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s1</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">s1</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+	<span class="p">}</span>
+	<span class="n">s1</span><span class="p">[</span><span class="m">0</span><span class="p">]</span> <span class="o">=</span> <span class="m">10</span>
+
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="slicing-slices">Slicing slices</h3>
+
+<p>Slices can be re-sliced, creating a new <em>slice</em> value that points to the same array.</p>
+
+<p>The expression</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>s[lo:hi]
+</code></pre></div></div>
+
+<p>evaluates to a slice of the elements from <code class="language-plaintext highlighter-rouge">lo</code> through <code class="language-plaintext highlighter-rouge">hi-1</code>, inclusive. Thus</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>s[lo:lo]
+</code></pre></div></div>
+
+<p>is empty and</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>s[lo:lo+1]
+</code></pre></div></div>
+
+<p>has one element.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">s</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">7</span><span class="p">,</span> <span class="m">11</span><span class="p">,</span> <span class="m">13</span><span class="p">}</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"s =="</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"s[1:4] =="</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">])</span>
+
+	<span class="c">// missing low index implies 0</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"s[:3] =="</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="o">:</span><span class="m">3</span><span class="p">])</span>
+
+	<span class="c">// missing high index implies len(s)</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"s[4:] =="</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="m">4</span><span class="o">:</span><span class="p">])</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="making-slices">Making slices</h3>
+
+<p>Slices are created with the <code class="language-plaintext highlighter-rouge">make</code> function. It works by allocating a zeroed array and returning a slice that refers to that array:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a := make([]int, 5)  // len(a)=5
+</code></pre></div></div>
+
+<p>To specify a capacity, pass a third argument to <code class="language-plaintext highlighter-rouge">make</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>b := make([]int, 0, 5) // len(b)=0, cap(b)=5
+
+b = b[:cap(b)] // len(b)=5, cap(b)=5
+b = b[1:]      // len(b)=4, cap(b)=4
+</code></pre></div></div>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">a</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
+	<span class="n">b</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
+	<span class="n">c</span> <span class="o">:=</span> <span class="n">a</span><span class="p">[</span><span class="o">:</span><span class="m">3</span><span class="p">]</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+	<span class="n">d</span> <span class="o">:=</span> <span class="n">b</span><span class="p">[</span><span class="o">:</span><span class="m">2</span><span class="p">]</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="nil-slices">Nil slices</h3>
+
+<p>The zero value of a slice is <code class="language-plaintext highlighter-rouge">nil</code>.</p>
+
+<p>A nil slice has a length and capacity of 0.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">z</span> <span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="kt">int</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="nb">cap</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+	<span class="c">//if z == nil {</span>
+    	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"nil!"</span><span class="p">)</span>
+	<span class="c">//}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="adding-elements-to-a-slice">Adding elements to a slice</h3>
+
+<p>It is common to append new elements to a slice, and so Go provides a built-in <code class="language-plaintext highlighter-rouge">append</code> function. The <a href="http://golang.org/pkg/builtin/#append">documentation</a> of the built-in package describes <code class="language-plaintext highlighter-rouge">append</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>func append(s []T, vs ...T) []T
+</code></pre></div></div>
+
+<p>The first parameter <code class="language-plaintext highlighter-rouge">s</code> of <code class="language-plaintext highlighter-rouge">append</code> is a slice of type <em>T</em>, and the rest are T values to append to the slice.</p>
+
+<p>The resulting value of <code class="language-plaintext highlighter-rouge">append</code> is a slice containing all the elements of the original slice plus the provided values.</p>
+
+<p>If the backing array of <code class="language-plaintext highlighter-rouge">s</code> is too small to fit all the given values a bigger array will be allocated. The returned slice will point to the newly allocated array.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">a</span> <span class="p">[]</span><span class="kt">int</span>
+	<span class="n">printSlice</span><span class="p">(</span><span class="s">"a"</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+	<span class="c">// append works on nil slices.</span>
+	<span class="n">a</span> <span class="o">=</span> <span class="nb">append</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+	<span class="n">printSlice</span><span class="p">(</span><span class="s">"a"</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+	<span class="c">// the slice grows as needed.</span>
+	<span class="n">a</span> <span class="o">=</span> <span class="nb">append</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+	<span class="n">printSlice</span><span class="p">(</span><span class="s">"a"</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+	<span class="c">// we can add more than one element at a time.</span>
+	<span class="n">a</span> <span class="o">=</span> <span class="nb">append</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">)</span>
+	<span class="n">printSlice</span><span class="p">(</span><span class="s">"a"</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">printSlice</span><span class="p">(</span><span class="n">s</span> <span class="kt">string</span><span class="p">,</span> <span class="n">x</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%s len=%d cap=%d %v</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+		<span class="n">s</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">cap</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">x</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="range">Range</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">range</code> form of the <code class="language-plaintext highlighter-rouge">for</code> loop iterates over a <code class="language-plaintext highlighter-rouge">slice</code> or <code class="language-plaintext highlighter-rouge">map</code>.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">var</span> <span class="n">pow</span> <span class="o">=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="m">8</span><span class="p">,</span> <span class="m">16</span><span class="p">,</span> <span class="m">32</span><span class="p">,</span> <span class="m">64</span><span class="p">,</span> <span class="m">128</span><span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">pow</span> <span class="p">{</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"2**%d = %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="range-continued">Range continued</h3>
+
+<p>You can skip the index or value by assigning to <em>_</em>.</p>
+
+<p>If you only want the index, drop the “, value” entirely.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">pow</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">float64</span><span class="p">,</span> <span class="m">10</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">pow</span> <span class="p">{</span>
+		<span class="c">// invalid operation: 1 &lt;&lt; uint(i) (shift of type float64)</span>
+		<span class="c">// pow[i] = float64(1&lt;&lt;uint(i)) + 0.1</span>
+		<span class="n">j</span> <span class="o">:=</span> <span class="m">1</span> <span class="o">&lt;&lt;</span> <span class="kt">uint</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+		<span class="n">pow</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kt">float64</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="o">+</span> <span class="m">0.1</span>
+	<span class="p">}</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">pow</span> <span class="p">{</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="maps">Maps</h3>
+
+<p>A <code class="language-plaintext highlighter-rouge">map</code> maps keys to values.</p>
+
+<p>Maps must be created with <code class="language-plaintext highlighter-rouge">make</code> (not new) before use; the <code class="language-plaintext highlighter-rouge">nil</code> map is empty and cannot be assigned to.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">type</span> <span class="n">Vertex</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">Lat</span><span class="p">,</span> <span class="n">Long</span> <span class="kt">float64</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="n">m</span> <span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="n">Vertex</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">m</span> <span class="o">=</span> <span class="nb">make</span><span class="p">(</span><span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="n">Vertex</span><span class="p">)</span>
+	<span class="n">m</span><span class="p">[</span><span class="s">"Bell Labs"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">{</span>
+		<span class="m">40.68433</span><span class="p">,</span> <span class="o">-</span><span class="m">74.39967</span><span class="p">,</span>
+	<span class="p">}</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s">"Bell Labs"</span><span class="p">])</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="map-literals">Map literals</h3>
+
+<p>Map literals are like <code class="language-plaintext highlighter-rouge">struct</code> literals, but the keys are required.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">type</span> <span class="n">Vertex</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">Lat</span><span class="p">,</span> <span class="n">Long</span> <span class="kt">float64</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="n">m</span> <span class="o">=</span> <span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="n">Vertex</span><span class="p">{</span>
+	<span class="s">"Bell Labs"</span><span class="o">:</span> <span class="n">Vertex</span><span class="p">{</span>
+		<span class="m">40.68433</span><span class="p">,</span> <span class="o">-</span><span class="m">74.39967</span><span class="p">,</span>
+	<span class="p">},</span>
+	<span class="s">"Google"</span><span class="o">:</span> <span class="n">Vertex</span><span class="p">{</span>
+		<span class="m">37.42202</span><span class="p">,</span> <span class="o">-</span><span class="m">122.08408</span><span class="p">,</span>
+	<span class="p">},</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+	<span class="n">m2</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="k">map</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span><span class="kt">string</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="n">m2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">"Hello"</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="map-literals-continued">Map literals continued</h3>
+
+<p>If the top-level type is just a type name, you can omit it from the elements of the literal.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">type</span> <span class="n">Vertex</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">Lat</span><span class="p">,</span> <span class="n">Long</span> <span class="kt">float64</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="n">m</span> <span class="o">=</span> <span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="n">Vertex</span><span class="p">{</span>
+	<span class="s">"Bell Labs"</span><span class="o">:</span> <span class="p">{</span><span class="m">40.68433</span><span class="p">,</span> <span class="o">-</span><span class="m">74.39967</span><span class="p">},</span>
+	<span class="s">"Google"</span><span class="o">:</span>    <span class="p">{</span><span class="m">37.42202</span><span class="p">,</span> <span class="o">-</span><span class="m">122.08408</span><span class="p">},</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="mutating-maps">Mutating Maps</h3>
+
+<p>Insert or update an element in map m:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m[key] = elem
+</code></pre></div></div>
+
+<p>Retrieve an element:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>elem = m[key]
+</code></pre></div></div>
+
+<p>Delete an element:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>delete(m, key)
+</code></pre></div></div>
+
+<p>Test that a key is present with a two-value assignment:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>elem, ok = m[key]
+</code></pre></div></div>
+
+<p>If key is in <code class="language-plaintext highlighter-rouge">m, ok</code> is <code class="language-plaintext highlighter-rouge">true</code>. If not, <code class="language-plaintext highlighter-rouge">ok</code> is <code class="language-plaintext highlighter-rouge">false</code> and <code class="language-plaintext highlighter-rouge">elem</code> is the zero value for the map’s element type.</p>
+
+<p>Similarly, when reading from a map if the key is not present the result is the zero value for the map’s element type.</p>
+
+<p><em>Note</em>: if <code class="language-plaintext highlighter-rouge">elem</code> or ok have not yet been declared you could use a short declaration form:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>elem, ok := m[key]
+</code></pre></div></div>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">m</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
+
+	<span class="n">m</span><span class="p">[</span><span class="s">"Answer"</span><span class="p">]</span> <span class="o">=</span> <span class="m">42</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"The value:"</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="s">"Answer"</span><span class="p">])</span>
+
+	<span class="n">m</span><span class="p">[</span><span class="s">"Answer"</span><span class="p">]</span> <span class="o">=</span> <span class="m">48</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"The value:"</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="s">"Answer"</span><span class="p">])</span>
+
+	<span class="nb">delete</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">"Answer"</span><span class="p">)</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"The value:"</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="s">"Answer"</span><span class="p">])</span>
+
+	<span class="n">v</span><span class="p">,</span> <span class="n">ok</span> <span class="o">:=</span> <span class="n">m</span><span class="p">[</span><span class="s">"Answer"</span><span class="p">]</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"The value:"</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="s">"Present?"</span><span class="p">,</span> <span class="n">ok</span><span class="p">)</span>
+	<span class="n">m</span><span class="p">[</span><span class="s">"Question"</span><span class="p">]</span> <span class="o">=</span> <span class="m">100</span>
+	<span class="n">v</span><span class="p">,</span> <span class="n">ok</span> <span class="o">:=</span> <span class="n">m</span><span class="p">[</span><span class="s">"Question"</span><span class="p">]</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"The value:"</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="s">"Present?"</span><span class="p">,</span> <span class="n">ok</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="function-values">Function values</h3>
+
+<p>Functions are values too.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"math"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">hypot</span> <span class="o">:=</span> <span class="k">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="kt">float64</span><span class="p">)</span> <span class="kt">float64</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">Sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
+	<span class="p">}</span>
+
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">hypot</span><span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">))</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="function-closures">Function closures</h3>
+
+<p>Go functions may be closures. A closure is a function value that references variables from outside its body. The function may access and assign to the referenced variables; in this sense the function is “bound” to the variables.</p>
+
+<p>For example, the <code class="language-plaintext highlighter-rouge">adder</code> function returns a <em>closure</em>. Each closure is bound to its own <code class="language-plaintext highlighter-rouge">sum</code> variable.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">adder</span><span class="p">()</span> <span class="k">func</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="n">sum</span> <span class="o">:=</span> <span class="m">0</span>
+	<span class="k">return</span> <span class="k">func</span><span class="p">(</span><span class="n">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+		<span class="n">sum</span> <span class="o">+=</span> <span class="n">x</span>
+		<span class="k">return</span> <span class="n">sum</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">pos</span><span class="p">,</span> <span class="n">neg</span> <span class="o">:=</span> <span class="n">adder</span><span class="p">(),</span> <span class="n">adder</span><span class="p">()</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span>
+			<span class="n">pos</span><span class="p">(</span><span class="n">i</span><span class="p">),</span>
+			<span class="n">neg</span><span class="p">(</span><span class="o">-</span><span class="m">2</span><span class="o">*</span><span class="n">i</span><span class="p">),</span>
+		<span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<hr />
+
+<h3 id="references">References</h3>
+
+<ul>
+  <li>Tour of Go,<a href="http://tour.golang.org/">http://tour.golang.org/</a></li>
+</ul>
+
+<style>
+  .utterances {
+      max-width: 100%;
+  }
+</style>
+<script src="https://utteranc.es/client.js"
+        repo="looogos/utterances"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</article>
+    </main>
+    <footer class="c-footer">
+  <div class="c-footer-license">
+    <span>Article licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></span>
+  </div>
+  
+  <details class="c-footer-extralinks" open>
+    <summary class="c-footer-extralinks-summary">Extral Links</summary>
+    <div class="c-footer-extralinks-content">
+      
+      <a href="https://jekyllrb.com/">Jekyll</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://shopify.github.io/liquid/">Liquid</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://docs.asciidoctor.org/">Asciidoctor</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://github.com/qqbuby/">GitHub</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="/feed.xml">RSS</a>
+      
+      
+    </div>
+  </details>
+  
+</footer>
+
+    <script src="/assets/js/nav.js" defer></script>
+    <script src="/assets/js/heading-anchors.js" defer></script>
+    <!-- https://cdn.jsdelivr.net/gh/lurongkai/anti-baidu/js/anti-baidu-latest.min.js -->    
+    <script type="text/javascript" src="/js/anti-baidu.min.js" charset="UTF-8"></script>
+  </body>
+</html>

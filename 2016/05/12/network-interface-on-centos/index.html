@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Network Interface On CentOS | CODE FARM</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Network Interface On CentOS" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="Under Red Hat Enterprise Linux, all network communications occur between configured software interfaces and physical networking devices connected to the system. The configuration files for network interfaces are located in the /etc/sysconfig/network-scripts/ directory. The scripts used to active and deactive these network interfaces are also located here. Although the number and type of interface files can differ from system to system, there are three categories of files that exist in this directory: Interface configuration files Interface control scripts Network function files The files in each of these categories work together to enable various network devices. 1. Network Configuration Files The primary network configuration files are as follows: /etc/hosts The main purpose of this file is to resolve hostnames that cannot be resolved any other way. It can also be used to resolve hostnames on small networks with no DNS server. Regardless of the type of network the computer is on, this file should contain a line specifying the IP address of the loopback device (127.0.0.1) as localhost.localdomain. For more information, refer to the hosts man page. /etc/resolv.conf This file specifies the IP addresses of DNS servers and the search domain. Unless configured to do otherwise, the network initialization scripts populate this file. For more information about this file, refer to the resolv.conf man page. /etc/sysconfig/network This file specifies routing and host information for all network interfaces. /etc/sysconfig/network-scripts/ifcfg-&lt;interface-name&gt; For each network interface, there is a corresponding interface configuration script. Each of these files provide information specific to a particular network interface. 2. Interface Configuration Files Interface configuration files control the software interfaces for individual network devices. As the system boots, it uses these files to determine what interfaces to bring up and how to configure them. These files are usually named ifcfg-&lt;name&gt;, where &lt;name&gt; refers to the name of the devices that the configuration file controls. 2.1 Ethernet Interfaces One of the most common interface file is ifcfg-eth0, which controls the first Ethernet network interface card or NIC in the system. In a system with mulitiple NICs, there are multiple ifcfg-eth&lt;x&gt; files (where &lt;x&gt; is a unique number conrresponding to a specific interface). Beacuse each device has its own configuration file, an administrator can control how each interface functions individually. The Network Administration Tool (system-config-network) is an easy way to make changes to the various network interface configuration files. However, it is also possible to manually edit the configuration files for a given network interface. Below is a listing of configurable parameters in an Ethernet interface configuration file: BONDING_OPTS=&lt;parameters&gt; sets the configuration parameters for the bonding device, and is used in /etc/sysconfig/network-scripts/ifcfg-bond&lt;N&gt;. These parameters are identical to those used for bonding devices in /sys/class/net/&lt;bonding device&gt;/bonding. This configuration method is used so that multiple bonding devices can have different configurations. If you use BONDING_OPTS in ifcfg-&lt;name&gt;, do not use /etc/modprobe.conf to specify options for the bonding device. BOOTPROTO=&lt;protocol&gt; where &lt;protocol&gt; is one of the following: none — No boot-time protocol should be used. bootp — The BOOTP protocol should be used. dhcp — The DHCP protocol should be used. BROADCAST=&lt;address&gt; where &lt;address&gt; is the broadcast address. This directive is deprecated, as the value is calculated automatically with ifcalc. DEVICE=&lt;name&gt; where &lt;name&gt; is the name of the physical device (except for dynamically-allocated PPP devices where it is the logical name). DHCP_HOSTNAME Use this option only if the DHCP server requires the client to specify a hostname before receiving an IP address. DNS{1,2}=&lt;address&gt; where &lt;address&gt; is a name server address to be placed in /etc/resolv.conf if the PEERDNS directive is set to yes. ETHTOOL_OPTS=&lt;options&gt; where &lt;options&gt; are any device-specific options supported by ethtool. For example, if you wanted to force 100Mb, full duplex: ETHTOOL_OPTS=&quot;autoneg off speed 100 duplex full&quot; Instead of a custom initscript, use ETHTOOL_OPTS to set the interface speed and duplex settings. Custom initscripts run outside of the network init script lead to unpredictable results during a post-boot network service restart. Changing speed or duplex settings almost always requires disabling autonegotiation with the autoneg off option. This needs to be stated first, as the option entries are order-dependent. GATEWAY=&lt;address&gt; where &lt;address&gt; is the IP address of the network router or gateway device (if any). HWADDR=&lt;MAC-address&gt; where &lt;MAC-address&gt; is the hardware address of the Ethernet device in the form AA:BB:CC:DD:EE:FF. This directive is useful for machines with multiple NICs to ensure that the interfaces are assigned the correct device names regardless of the configured load order for each NIC’s module. This directive should not be used in conjunction with MACADDR. IPADDR=&lt;address&gt; where &lt;address&gt; is the IP address. MACADDR=&lt;MAC-address&gt; where &lt;MAC-address&gt; is the hardware address of the Ethernet device in the form AA:BB:CC:DD:EE:FF. This directive is used to assign a MAC address to an interface, overriding the one assigned to the physical NIC. This directive should not be used in conjunction with HWADDR. MASTER=&lt;bond-interface&gt; where &lt;bond-interface&gt; is the channel bonding interface to which the Ethernet interface is linked. This directive is used in conjunction with the SLAVE directive. NETMASK=&lt;mask&gt; where &lt;mask&gt; is the netmask value. NETWORK=&lt;address&gt; where &lt;address&gt; is the network address. This directive is deprecated, as the value is calculated automatically with ifcalc. ONBOOT=&lt;answer&gt; where &lt;answer&gt; is one of the following: yes — This device should be activated at boot-time. no — This device should not be activated at boot-time. PEERDNS=&lt;answer&gt; where &lt;answer&gt; is one of the following: yes — Modif /etc/resolv.conf if the DNS directive is set. If using DHCP, then yes is the default. no — Do not modify/etc/resolv.conf. SLAVE=&lt;bond-interface&gt; where &lt;bond-interface&gt; is one of the following: yes — This device is controlled by the channel bonding interface specified in the MASTER directive. no — This device is not controlled by the channel bonding interface specified in the MASTER directive. This directive is used in conjunction with the MASTER directive. SRCADDR=&lt;address&gt; where &lt;address&gt; is the specified source IP address for outgoing packets. USERCTL=&lt;answer&gt; where &lt;answer&gt; is one of the following: yes — Non-root users are allowed to control this device. no — Non-root users are not allowed to control this device. References Network Interfaces" />
+<meta property="og:description" content="Under Red Hat Enterprise Linux, all network communications occur between configured software interfaces and physical networking devices connected to the system. The configuration files for network interfaces are located in the /etc/sysconfig/network-scripts/ directory. The scripts used to active and deactive these network interfaces are also located here. Although the number and type of interface files can differ from system to system, there are three categories of files that exist in this directory: Interface configuration files Interface control scripts Network function files The files in each of these categories work together to enable various network devices. 1. Network Configuration Files The primary network configuration files are as follows: /etc/hosts The main purpose of this file is to resolve hostnames that cannot be resolved any other way. It can also be used to resolve hostnames on small networks with no DNS server. Regardless of the type of network the computer is on, this file should contain a line specifying the IP address of the loopback device (127.0.0.1) as localhost.localdomain. For more information, refer to the hosts man page. /etc/resolv.conf This file specifies the IP addresses of DNS servers and the search domain. Unless configured to do otherwise, the network initialization scripts populate this file. For more information about this file, refer to the resolv.conf man page. /etc/sysconfig/network This file specifies routing and host information for all network interfaces. /etc/sysconfig/network-scripts/ifcfg-&lt;interface-name&gt; For each network interface, there is a corresponding interface configuration script. Each of these files provide information specific to a particular network interface. 2. Interface Configuration Files Interface configuration files control the software interfaces for individual network devices. As the system boots, it uses these files to determine what interfaces to bring up and how to configure them. These files are usually named ifcfg-&lt;name&gt;, where &lt;name&gt; refers to the name of the devices that the configuration file controls. 2.1 Ethernet Interfaces One of the most common interface file is ifcfg-eth0, which controls the first Ethernet network interface card or NIC in the system. In a system with mulitiple NICs, there are multiple ifcfg-eth&lt;x&gt; files (where &lt;x&gt; is a unique number conrresponding to a specific interface). Beacuse each device has its own configuration file, an administrator can control how each interface functions individually. The Network Administration Tool (system-config-network) is an easy way to make changes to the various network interface configuration files. However, it is also possible to manually edit the configuration files for a given network interface. Below is a listing of configurable parameters in an Ethernet interface configuration file: BONDING_OPTS=&lt;parameters&gt; sets the configuration parameters for the bonding device, and is used in /etc/sysconfig/network-scripts/ifcfg-bond&lt;N&gt;. These parameters are identical to those used for bonding devices in /sys/class/net/&lt;bonding device&gt;/bonding. This configuration method is used so that multiple bonding devices can have different configurations. If you use BONDING_OPTS in ifcfg-&lt;name&gt;, do not use /etc/modprobe.conf to specify options for the bonding device. BOOTPROTO=&lt;protocol&gt; where &lt;protocol&gt; is one of the following: none — No boot-time protocol should be used. bootp — The BOOTP protocol should be used. dhcp — The DHCP protocol should be used. BROADCAST=&lt;address&gt; where &lt;address&gt; is the broadcast address. This directive is deprecated, as the value is calculated automatically with ifcalc. DEVICE=&lt;name&gt; where &lt;name&gt; is the name of the physical device (except for dynamically-allocated PPP devices where it is the logical name). DHCP_HOSTNAME Use this option only if the DHCP server requires the client to specify a hostname before receiving an IP address. DNS{1,2}=&lt;address&gt; where &lt;address&gt; is a name server address to be placed in /etc/resolv.conf if the PEERDNS directive is set to yes. ETHTOOL_OPTS=&lt;options&gt; where &lt;options&gt; are any device-specific options supported by ethtool. For example, if you wanted to force 100Mb, full duplex: ETHTOOL_OPTS=&quot;autoneg off speed 100 duplex full&quot; Instead of a custom initscript, use ETHTOOL_OPTS to set the interface speed and duplex settings. Custom initscripts run outside of the network init script lead to unpredictable results during a post-boot network service restart. Changing speed or duplex settings almost always requires disabling autonegotiation with the autoneg off option. This needs to be stated first, as the option entries are order-dependent. GATEWAY=&lt;address&gt; where &lt;address&gt; is the IP address of the network router or gateway device (if any). HWADDR=&lt;MAC-address&gt; where &lt;MAC-address&gt; is the hardware address of the Ethernet device in the form AA:BB:CC:DD:EE:FF. This directive is useful for machines with multiple NICs to ensure that the interfaces are assigned the correct device names regardless of the configured load order for each NIC’s module. This directive should not be used in conjunction with MACADDR. IPADDR=&lt;address&gt; where &lt;address&gt; is the IP address. MACADDR=&lt;MAC-address&gt; where &lt;MAC-address&gt; is the hardware address of the Ethernet device in the form AA:BB:CC:DD:EE:FF. This directive is used to assign a MAC address to an interface, overriding the one assigned to the physical NIC. This directive should not be used in conjunction with HWADDR. MASTER=&lt;bond-interface&gt; where &lt;bond-interface&gt; is the channel bonding interface to which the Ethernet interface is linked. This directive is used in conjunction with the SLAVE directive. NETMASK=&lt;mask&gt; where &lt;mask&gt; is the netmask value. NETWORK=&lt;address&gt; where &lt;address&gt; is the network address. This directive is deprecated, as the value is calculated automatically with ifcalc. ONBOOT=&lt;answer&gt; where &lt;answer&gt; is one of the following: yes — This device should be activated at boot-time. no — This device should not be activated at boot-time. PEERDNS=&lt;answer&gt; where &lt;answer&gt; is one of the following: yes — Modif /etc/resolv.conf if the DNS directive is set. If using DHCP, then yes is the default. no — Do not modify/etc/resolv.conf. SLAVE=&lt;bond-interface&gt; where &lt;bond-interface&gt; is one of the following: yes — This device is controlled by the channel bonding interface specified in the MASTER directive. no — This device is not controlled by the channel bonding interface specified in the MASTER directive. This directive is used in conjunction with the MASTER directive. SRCADDR=&lt;address&gt; where &lt;address&gt; is the specified source IP address for outgoing packets. USERCTL=&lt;answer&gt; where &lt;answer&gt; is one of the following: yes — Non-root users are allowed to control this device. no — Non-root users are not allowed to control this device. References Network Interfaces" />
+<link rel="canonical" href="https://blog.codefarm.me/2016/05/12/network-interface-on-centos/" />
+<meta property="og:url" content="https://blog.codefarm.me/2016/05/12/network-interface-on-centos/" />
+<meta property="og:site_name" content="CODE FARM" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-05-12T15:11:10+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Network Interface On CentOS" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2016-05-12T15:11:10+08:00","datePublished":"2016-05-12T15:11:10+08:00","description":"Under Red Hat Enterprise Linux, all network communications occur between configured software interfaces and physical networking devices connected to the system. The configuration files for network interfaces are located in the /etc/sysconfig/network-scripts/ directory. The scripts used to active and deactive these network interfaces are also located here. Although the number and type of interface files can differ from system to system, there are three categories of files that exist in this directory: Interface configuration files Interface control scripts Network function files The files in each of these categories work together to enable various network devices. 1. Network Configuration Files The primary network configuration files are as follows: /etc/hosts The main purpose of this file is to resolve hostnames that cannot be resolved any other way. It can also be used to resolve hostnames on small networks with no DNS server. Regardless of the type of network the computer is on, this file should contain a line specifying the IP address of the loopback device (127.0.0.1) as localhost.localdomain. For more information, refer to the hosts man page. /etc/resolv.conf This file specifies the IP addresses of DNS servers and the search domain. Unless configured to do otherwise, the network initialization scripts populate this file. For more information about this file, refer to the resolv.conf man page. /etc/sysconfig/network This file specifies routing and host information for all network interfaces. /etc/sysconfig/network-scripts/ifcfg-&lt;interface-name&gt; For each network interface, there is a corresponding interface configuration script. Each of these files provide information specific to a particular network interface. 2. Interface Configuration Files Interface configuration files control the software interfaces for individual network devices. As the system boots, it uses these files to determine what interfaces to bring up and how to configure them. These files are usually named ifcfg-&lt;name&gt;, where &lt;name&gt; refers to the name of the devices that the configuration file controls. 2.1 Ethernet Interfaces One of the most common interface file is ifcfg-eth0, which controls the first Ethernet network interface card or NIC in the system. In a system with mulitiple NICs, there are multiple ifcfg-eth&lt;x&gt; files (where &lt;x&gt; is a unique number conrresponding to a specific interface). Beacuse each device has its own configuration file, an administrator can control how each interface functions individually. The Network Administration Tool (system-config-network) is an easy way to make changes to the various network interface configuration files. However, it is also possible to manually edit the configuration files for a given network interface. Below is a listing of configurable parameters in an Ethernet interface configuration file: BONDING_OPTS=&lt;parameters&gt; sets the configuration parameters for the bonding device, and is used in /etc/sysconfig/network-scripts/ifcfg-bond&lt;N&gt;. These parameters are identical to those used for bonding devices in /sys/class/net/&lt;bonding device&gt;/bonding. This configuration method is used so that multiple bonding devices can have different configurations. If you use BONDING_OPTS in ifcfg-&lt;name&gt;, do not use /etc/modprobe.conf to specify options for the bonding device. BOOTPROTO=&lt;protocol&gt; where &lt;protocol&gt; is one of the following: none — No boot-time protocol should be used. bootp — The BOOTP protocol should be used. dhcp — The DHCP protocol should be used. BROADCAST=&lt;address&gt; where &lt;address&gt; is the broadcast address. This directive is deprecated, as the value is calculated automatically with ifcalc. DEVICE=&lt;name&gt; where &lt;name&gt; is the name of the physical device (except for dynamically-allocated PPP devices where it is the logical name). DHCP_HOSTNAME Use this option only if the DHCP server requires the client to specify a hostname before receiving an IP address. DNS{1,2}=&lt;address&gt; where &lt;address&gt; is a name server address to be placed in /etc/resolv.conf if the PEERDNS directive is set to yes. ETHTOOL_OPTS=&lt;options&gt; where &lt;options&gt; are any device-specific options supported by ethtool. For example, if you wanted to force 100Mb, full duplex: ETHTOOL_OPTS=&quot;autoneg off speed 100 duplex full&quot; Instead of a custom initscript, use ETHTOOL_OPTS to set the interface speed and duplex settings. Custom initscripts run outside of the network init script lead to unpredictable results during a post-boot network service restart. Changing speed or duplex settings almost always requires disabling autonegotiation with the autoneg off option. This needs to be stated first, as the option entries are order-dependent. GATEWAY=&lt;address&gt; where &lt;address&gt; is the IP address of the network router or gateway device (if any). HWADDR=&lt;MAC-address&gt; where &lt;MAC-address&gt; is the hardware address of the Ethernet device in the form AA:BB:CC:DD:EE:FF. This directive is useful for machines with multiple NICs to ensure that the interfaces are assigned the correct device names regardless of the configured load order for each NIC’s module. This directive should not be used in conjunction with MACADDR. IPADDR=&lt;address&gt; where &lt;address&gt; is the IP address. MACADDR=&lt;MAC-address&gt; where &lt;MAC-address&gt; is the hardware address of the Ethernet device in the form AA:BB:CC:DD:EE:FF. This directive is used to assign a MAC address to an interface, overriding the one assigned to the physical NIC. This directive should not be used in conjunction with HWADDR. MASTER=&lt;bond-interface&gt; where &lt;bond-interface&gt; is the channel bonding interface to which the Ethernet interface is linked. This directive is used in conjunction with the SLAVE directive. NETMASK=&lt;mask&gt; where &lt;mask&gt; is the netmask value. NETWORK=&lt;address&gt; where &lt;address&gt; is the network address. This directive is deprecated, as the value is calculated automatically with ifcalc. ONBOOT=&lt;answer&gt; where &lt;answer&gt; is one of the following: yes — This device should be activated at boot-time. no — This device should not be activated at boot-time. PEERDNS=&lt;answer&gt; where &lt;answer&gt; is one of the following: yes — Modif /etc/resolv.conf if the DNS directive is set. If using DHCP, then yes is the default. no — Do not modify/etc/resolv.conf. SLAVE=&lt;bond-interface&gt; where &lt;bond-interface&gt; is one of the following: yes — This device is controlled by the channel bonding interface specified in the MASTER directive. no — This device is not controlled by the channel bonding interface specified in the MASTER directive. This directive is used in conjunction with the MASTER directive. SRCADDR=&lt;address&gt; where &lt;address&gt; is the specified source IP address for outgoing packets. USERCTL=&lt;answer&gt; where &lt;answer&gt; is one of the following: yes — Non-root users are allowed to control this device. no — Non-root users are not allowed to control this device. References Network Interfaces","headline":"Network Interface On CentOS","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.codefarm.me/2016/05/12/network-interface-on-centos/"},"url":"https://blog.codefarm.me/2016/05/12/network-interface-on-centos/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css"><!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SN88FJ18E5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-SN88FJ18E5');
+    </script></head>
+  <body>
+    <header class="c-header">
+  <div class="o-container">
+    <a class="c-header-title" href="/">CODE FARM</a>
+    <button class="c-header-nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+      <span class="c-header-nav-toggle-icon"></span>
+    </button>
+    <div class="c-header-nav-wrapper" id="nav-wrapper">
+      <nav class="c-header-nav">
+        <a href="/">Home</a>
+        <a href="/categories/">Category</a>
+        <a href="/tags/">Tag</a>
+        <a href="/archives/">Archive</a>
+        <a href="/about/">About</a>
+        <a href="https://resume.github.io/?looogos" target="_blank">R&eacute;sum&eacute;</a>
+      </nav>
+    </div>
+  </div>
+  
+
+
+
+<div class="o-container">
+  <div class="c-banner">
+    <img src="/assets/images/galaxy.svg" alt="Galaxy background" class="c-banner-bg">
+    <div class="c-banner-quote">
+      <p>"The Renaissance was a time when art, science, and philosophy flourished."</p>
+      <cite>- Michelangelo</cite>
+    </div>
+  </div>
+</div>
+</header>
+
+    <main class="o-container">
+      <article class="c-post">
+  <header class="c-post-header">
+    <h1 class="c-post-title">Network Interface On CentOS</h1><p class="c-post-meta">12 May 2016</p>
+  </header>
+
+  <div class="c-post-content">
+    <p>Under Red Hat Enterprise Linux, all network communications occur between configured software <em>interfaces</em> and <em>physical networking devices</em> connected to the system.</p>
+
+<p>The configuration files for network interfaces are located in the <code class="language-plaintext highlighter-rouge">/etc/sysconfig/network-scripts/</code> directory. The scripts used to active and deactive these network interfaces are also located here. Although the number and type of interface files can differ from system to system, there are three categories of files that exist in this directory:</p>
+
+<ol>
+  <li>
+    <p><em>Interface configuration files</em></p>
+  </li>
+  <li>
+    <p><em>Interface control scripts</em></p>
+  </li>
+  <li>
+    <p><em>Network function files</em></p>
+  </li>
+</ol>
+
+<p>The files in each of these categories work together to enable various network devices.</p>
+
+<h2 id="1-network-configuration-files">1. Network Configuration Files</h2>
+
+<p>The primary network configuration files are as follows:</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">/etc/hosts</code></p>
+
+    <p>The main purpose of this file is to resolve hostnames that cannot be resolved any other way. It can also be used to resolve hostnames on small networks with no DNS server. Regardless of the type of network the computer is on, this file should contain a line specifying the IP address of the loopback device (127.0.0.1) as localhost.localdomain. For more information, refer to the hosts man page.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">/etc/resolv.conf</code></p>
+
+    <p>This file specifies the IP addresses of DNS servers and the search domain. Unless configured to do otherwise, the network initialization scripts populate this file. For more information about this file, refer to the resolv.conf man page.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">/etc/sysconfig/network</code></p>
+
+    <p>This file specifies routing and host information for all network interfaces.</p>
+  </li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">/etc/sysconfig/network-scripts/ifcfg-&lt;interface-name&gt;</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>For each network interface, there is a corresponding interface configuration script. Each of these files provide information specific to a particular network interface.
+</code></pre></div></div>
+
+<h2 id="2-interface-configuration-files">2. Interface Configuration Files</h2>
+
+<p>Interface configuration files control the software interfaces for individual network devices. As the system boots, it uses these files to determine what interfaces to bring up and how to configure them. These files are usually named <strong>ifcfg-&lt;name&gt;</strong>, where <strong>&lt;name&gt;</strong> refers to the name of the devices that the configuration file controls.</p>
+
+<h3 id="21-ethernet-interfaces">2.1 Ethernet Interfaces</h3>
+
+<p>One of the most common interface file is <strong>ifcfg-eth0</strong>, which controls the first Ethernet <em>network interface card</em> or <em>NIC</em> in the system. In a system with mulitiple NICs, there are multiple <strong>ifcfg-eth&lt;<em>x</em>&gt;</strong> files (where <strong>&lt;x&gt;</strong> is a unique number conrresponding to a specific interface). Beacuse each device has its own configuration file, an administrator can control how each interface functions individually.</p>
+
+<p>The <strong>Network Administration Tool</strong> (system-config-network) is an easy way to make changes to the various network interface configuration files.</p>
+
+<p>However, it is also possible to manually edit the configuration files for a given network interface.</p>
+
+<p>Below is a listing of configurable parameters in an Ethernet interface configuration file:</p>
+
+<ul>
+  <li>
+    <p><strong>BONDING_OPTS</strong>=<code class="language-plaintext highlighter-rouge">&lt;parameters&gt;</code></p>
+
+    <p>sets the configuration parameters for the bonding device, and is used in <code class="language-plaintext highlighter-rouge">/etc/sysconfig/network-scripts/ifcfg-bond&lt;N&gt;</code>. These parameters are identical to those used for bonding devices in <code class="language-plaintext highlighter-rouge">/sys/class/net/&lt;bonding device&gt;/bonding</code>.</p>
+
+    <p>This configuration method is used so that multiple bonding devices can have different configurations. If you use BONDING_OPTS in <code class="language-plaintext highlighter-rouge">ifcfg-&lt;name&gt;</code>, do not use <code class="language-plaintext highlighter-rouge">/etc/modprobe.conf</code> to specify options for the bonding device.</p>
+  </li>
+  <li>
+    <p><strong>BOOTPROTO</strong>=<code class="language-plaintext highlighter-rouge">&lt;protocol&gt;</code></p>
+
+    <ul>
+      <li>
+        <p>where <code class="language-plaintext highlighter-rouge">&lt;protocol&gt;</code> is one of the following:</p>
+
+        <p>none — No boot-time protocol should be used.</p>
+
+        <p>bootp — The BOOTP protocol should be used.</p>
+
+        <p>dhcp — The DHCP protocol should be used.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>BROADCAST</strong>=<code class="language-plaintext highlighter-rouge">&lt;address&gt;</code></p>
+
+    <p>where <code class="language-plaintext highlighter-rouge">&lt;address&gt;</code> is the broadcast address. This directive is deprecated, as the value is calculated automatically with ifcalc.</p>
+  </li>
+  <li>
+    <p><strong>DEVICE</strong>=<code class="language-plaintext highlighter-rouge">&lt;name&gt;</code></p>
+
+    <p>where <code class="language-plaintext highlighter-rouge">&lt;name&gt;</code> is the name of the physical device (except for dynamically-allocated PPP devices where it is the logical name).</p>
+  </li>
+  <li>
+    <p><strong>DHCP_HOSTNAME</strong></p>
+
+    <p>Use this option only if the DHCP server requires the client to specify a hostname before receiving an IP address.</p>
+  </li>
+  <li>
+    <p><strong>DNS{1,2}</strong>=<code class="language-plaintext highlighter-rouge">&lt;address&gt;</code></p>
+
+    <p>where <code class="language-plaintext highlighter-rouge">&lt;address&gt;</code> is a name server address to be placed in <code class="language-plaintext highlighter-rouge">/etc/resolv.conf</code> if the PEERDNS directive is set to yes.</p>
+  </li>
+  <li>
+    <p><strong>ETHTOOL_OPTS</strong>=<code class="language-plaintext highlighter-rouge">&lt;options&gt;</code></p>
+
+    <p>where <code class="language-plaintext highlighter-rouge">&lt;options&gt;</code> are any device-specific options supported by ethtool. For example, if you wanted to force 100Mb, full duplex:</p>
+
+    <p><code class="language-plaintext highlighter-rouge">ETHTOOL_OPTS="autoneg off speed 100 duplex full"</code></p>
+
+    <p>Instead of a custom initscript, use ETHTOOL_OPTS to set the interface speed and duplex settings. Custom initscripts run outside of the network init script lead to unpredictable results during a post-boot network service restart.</p>
+
+    <p><em>Changing speed or duplex settings almost always requires disabling autonegotiation with the autoneg off option. This needs to be stated first, as the option entries are order-dependent.</em></p>
+  </li>
+  <li>
+    <p><strong>GATEWAY</strong>=<code class="language-plaintext highlighter-rouge">&lt;address&gt;</code></p>
+
+    <p>where <code class="language-plaintext highlighter-rouge">&lt;address&gt;</code> is the IP address of the network router or gateway device (if any).</p>
+  </li>
+  <li>
+    <p><strong>HWADDR</strong>=<code class="language-plaintext highlighter-rouge">&lt;MAC-address&gt;</code></p>
+
+    <p>where <code class="language-plaintext highlighter-rouge">&lt;MAC-address&gt;</code> is the hardware address of the Ethernet device in the form AA:BB:CC:DD:EE:FF. This directive is useful for machines with multiple NICs to ensure that the interfaces are assigned the correct device names regardless of the configured load order for each NIC’s module. This directive should not be used in conjunction with MACADDR.</p>
+  </li>
+  <li>
+    <p><strong>IPADDR</strong>=<code class="language-plaintext highlighter-rouge">&lt;address&gt;</code></p>
+
+    <p>where <code class="language-plaintext highlighter-rouge">&lt;address&gt;</code> is the IP address.</p>
+  </li>
+  <li>
+    <p><strong>MACADDR</strong>=<code class="language-plaintext highlighter-rouge">&lt;MAC-address&gt;</code></p>
+
+    <p>where <code class="language-plaintext highlighter-rouge">&lt;MAC-address&gt;</code> is the hardware address of the Ethernet device in the form AA:BB:CC:DD:EE:FF. This directive is used to assign a MAC address to an interface, overriding the one assigned to the physical NIC. This directive should not be used in conjunction with HWADDR.</p>
+  </li>
+  <li>
+    <p><strong>MASTER</strong>=<code class="language-plaintext highlighter-rouge">&lt;bond-interface&gt;</code></p>
+
+    <p>where <code class="language-plaintext highlighter-rouge">&lt;bond-interface&gt;</code> is the channel bonding interface to which the Ethernet interface is linked.</p>
+
+    <p>This directive is used in conjunction with the SLAVE directive.</p>
+  </li>
+  <li>
+    <p><strong>NETMASK</strong>=<code class="language-plaintext highlighter-rouge">&lt;mask&gt;</code></p>
+
+    <p>where <code class="language-plaintext highlighter-rouge">&lt;mask&gt;</code> is the netmask value.</p>
+  </li>
+  <li>
+    <p><strong>NETWORK</strong>=<code class="language-plaintext highlighter-rouge">&lt;address&gt;</code></p>
+
+    <p>where <code class="language-plaintext highlighter-rouge">&lt;address&gt;</code> is the network address. This directive is deprecated, as the value is calculated automatically with ifcalc.</p>
+  </li>
+  <li>
+    <p><strong>ONBOOT</strong>=<code class="language-plaintext highlighter-rouge">&lt;answer&gt;</code></p>
+
+    <ul>
+      <li>
+        <p>where <code class="language-plaintext highlighter-rouge">&lt;answer&gt;</code> is one of the following:</p>
+
+        <p>yes — This device should be activated at boot-time.</p>
+
+        <p>no — This device should not be activated at boot-time.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>PEERDNS</strong>=<code class="language-plaintext highlighter-rouge">&lt;answer&gt;</code></p>
+
+    <ul>
+      <li>
+        <p>where <code class="language-plaintext highlighter-rouge">&lt;answer&gt;</code> is one of the following:</p>
+
+        <p>yes — Modif <code class="language-plaintext highlighter-rouge">/etc/resolv.conf</code> if the DNS directive is set. If using DHCP, then yes is the default.</p>
+
+        <p>no — Do not modify<code class="language-plaintext highlighter-rouge">/etc/resolv.conf</code>.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>SLAVE</strong>=<code class="language-plaintext highlighter-rouge">&lt;bond-interface&gt;</code></p>
+
+    <ul>
+      <li>
+        <p>where <code class="language-plaintext highlighter-rouge">&lt;bond-interface&gt;</code> is one of the following:</p>
+
+        <p>yes — This device is controlled by the channel bonding interface specified in the MASTER directive.</p>
+
+        <p>no — This device is not controlled by the channel bonding interface specified in the MASTER directive.</p>
+      </li>
+    </ul>
+
+    <p>This directive is used in conjunction with the MASTER directive.</p>
+  </li>
+  <li>
+    <p><strong>SRCADDR</strong>=<code class="language-plaintext highlighter-rouge">&lt;address&gt;</code></p>
+
+    <p>where &lt;address&gt; is the specified source IP address for outgoing packets.</p>
+  </li>
+  <li>
+    <p><strong>USERCTL</strong>=<code class="language-plaintext highlighter-rouge">&lt;answer&gt;</code></p>
+
+    <ul>
+      <li>
+        <p>where <code class="language-plaintext highlighter-rouge">&lt;answer&gt;</code> is one of the following:</p>
+
+        <p>yes — Non-root users are allowed to control this device.</p>
+
+        <p>no — Non-root users are not allowed to control this device.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h3 id="references">References</h3>
+
+<ul>
+  <li><a href="https://www.centos.org/docs/5/html/5.1/Deployment_Guide/ch-networkscripts.html">Network Interfaces</a></li>
+</ul>
+
+<style>
+  .utterances {
+      max-width: 100%;
+  }
+</style>
+<script src="https://utteranc.es/client.js"
+        repo="looogos/utterances"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</article>
+    </main>
+    <footer class="c-footer">
+  <div class="c-footer-license">
+    <span>Article licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></span>
+  </div>
+  
+  <details class="c-footer-extralinks" open>
+    <summary class="c-footer-extralinks-summary">Extral Links</summary>
+    <div class="c-footer-extralinks-content">
+      
+      <a href="https://jekyllrb.com/">Jekyll</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://shopify.github.io/liquid/">Liquid</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://docs.asciidoctor.org/">Asciidoctor</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://github.com/qqbuby/">GitHub</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="/feed.xml">RSS</a>
+      
+      
+    </div>
+  </details>
+  
+</footer>
+
+    <script src="/assets/js/nav.js" defer></script>
+    <script src="/assets/js/heading-anchors.js" defer></script>
+    <!-- https://cdn.jsdelivr.net/gh/lurongkai/anti-baidu/js/anti-baidu-latest.min.js -->    
+    <script type="text/javascript" src="/js/anti-baidu.min.js" charset="UTF-8"></script>
+  </body>
+</html>

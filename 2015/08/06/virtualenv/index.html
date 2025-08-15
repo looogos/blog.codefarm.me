@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Virtualenv for python runtime | CODE FARM</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Virtualenv for python runtime" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="virtualenv is a tool to create isolated Python environments. The basic problem being addressed is one of dependencies and versions, and indirectly permissions. Imagine you have an application that needs version 1 of LibFoo, but another application requires version 2. How can you use both these applications? If you install everything into /usr/lib/python2.7/site-packages (or whatever your platform’s standard location is), it’s easy to end up in a situation where you unintentionally upgrade an application that shouldn’t be upgraded. Or more generally, what if you want to install an application and leave it be? If an application works, any change in its libraries or the versions of those libraries can break the application. Also, what if you can’t install packages into the globa site-packages directory? For instance, on a shared host. In all these cases, virtualenv can help you. It creates an environment that has its own installation directories, that doesn’t share libraries with other virtualenv environments (and optionally doesn’t access the globally installed libraries either). installation $ sudo pip install virtualenv create isolated env $ mkdir diango184 $ virtualenv django184 active virtual env $ source django184/bin/active deactive $ deactive example $ python -c &quot;import django; print django.__version__&quot; Traceback (most recent call last): File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt; ImportError: No module named django $ cd /tmp $ mkdir django184 $ virtualenv django184/ New python executable in /tmp/django184/bin/python Installing setuptools, pip, wheel...done. $ source django184/bin/activate (django184) $ pip install django==1.8.4 Collecting django==1.8.4 Using cached https://pypi.mirrors.ustc.edu.cn/packages/py2.py3/D/Django/Django-1.8.4-py2.py3-none-any.whl Installing collected packages: django Successfully installed django-1.8.4 You are using pip version 8.0.2, however version 8.1.1 is available. You should consider upgrading via the &#39;pip install --upgrade pip&#39; command. (django184) $ python -c &quot;import django; print django.__version__&quot; 1.8.4 (django184) $ deactivate $ python -c &quot;import django; print django.__version__&quot; Traceback (most recent call last): File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt; ImportError: No module named django $ rm -rf django184 References https://virtualenv.pypa.io/ https://pypi.python.org/" />
+<meta property="og:description" content="virtualenv is a tool to create isolated Python environments. The basic problem being addressed is one of dependencies and versions, and indirectly permissions. Imagine you have an application that needs version 1 of LibFoo, but another application requires version 2. How can you use both these applications? If you install everything into /usr/lib/python2.7/site-packages (or whatever your platform’s standard location is), it’s easy to end up in a situation where you unintentionally upgrade an application that shouldn’t be upgraded. Or more generally, what if you want to install an application and leave it be? If an application works, any change in its libraries or the versions of those libraries can break the application. Also, what if you can’t install packages into the globa site-packages directory? For instance, on a shared host. In all these cases, virtualenv can help you. It creates an environment that has its own installation directories, that doesn’t share libraries with other virtualenv environments (and optionally doesn’t access the globally installed libraries either). installation $ sudo pip install virtualenv create isolated env $ mkdir diango184 $ virtualenv django184 active virtual env $ source django184/bin/active deactive $ deactive example $ python -c &quot;import django; print django.__version__&quot; Traceback (most recent call last): File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt; ImportError: No module named django $ cd /tmp $ mkdir django184 $ virtualenv django184/ New python executable in /tmp/django184/bin/python Installing setuptools, pip, wheel...done. $ source django184/bin/activate (django184) $ pip install django==1.8.4 Collecting django==1.8.4 Using cached https://pypi.mirrors.ustc.edu.cn/packages/py2.py3/D/Django/Django-1.8.4-py2.py3-none-any.whl Installing collected packages: django Successfully installed django-1.8.4 You are using pip version 8.0.2, however version 8.1.1 is available. You should consider upgrading via the &#39;pip install --upgrade pip&#39; command. (django184) $ python -c &quot;import django; print django.__version__&quot; 1.8.4 (django184) $ deactivate $ python -c &quot;import django; print django.__version__&quot; Traceback (most recent call last): File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt; ImportError: No module named django $ rm -rf django184 References https://virtualenv.pypa.io/ https://pypi.python.org/" />
+<link rel="canonical" href="https://blog.codefarm.me/2015/08/06/virtualenv/" />
+<meta property="og:url" content="https://blog.codefarm.me/2015/08/06/virtualenv/" />
+<meta property="og:site_name" content="CODE FARM" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-08-06T22:36:37+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Virtualenv for python runtime" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2015-08-06T22:36:37+08:00","datePublished":"2015-08-06T22:36:37+08:00","description":"virtualenv is a tool to create isolated Python environments. The basic problem being addressed is one of dependencies and versions, and indirectly permissions. Imagine you have an application that needs version 1 of LibFoo, but another application requires version 2. How can you use both these applications? If you install everything into /usr/lib/python2.7/site-packages (or whatever your platform’s standard location is), it’s easy to end up in a situation where you unintentionally upgrade an application that shouldn’t be upgraded. Or more generally, what if you want to install an application and leave it be? If an application works, any change in its libraries or the versions of those libraries can break the application. Also, what if you can’t install packages into the globa site-packages directory? For instance, on a shared host. In all these cases, virtualenv can help you. It creates an environment that has its own installation directories, that doesn’t share libraries with other virtualenv environments (and optionally doesn’t access the globally installed libraries either). installation $ sudo pip install virtualenv create isolated env $ mkdir diango184 $ virtualenv django184 active virtual env $ source django184/bin/active deactive $ deactive example $ python -c &quot;import django; print django.__version__&quot; Traceback (most recent call last): File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt; ImportError: No module named django $ cd /tmp $ mkdir django184 $ virtualenv django184/ New python executable in /tmp/django184/bin/python Installing setuptools, pip, wheel...done. $ source django184/bin/activate (django184) $ pip install django==1.8.4 Collecting django==1.8.4 Using cached https://pypi.mirrors.ustc.edu.cn/packages/py2.py3/D/Django/Django-1.8.4-py2.py3-none-any.whl Installing collected packages: django Successfully installed django-1.8.4 You are using pip version 8.0.2, however version 8.1.1 is available. You should consider upgrading via the &#39;pip install --upgrade pip&#39; command. (django184) $ python -c &quot;import django; print django.__version__&quot; 1.8.4 (django184) $ deactivate $ python -c &quot;import django; print django.__version__&quot; Traceback (most recent call last): File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt; ImportError: No module named django $ rm -rf django184 References https://virtualenv.pypa.io/ https://pypi.python.org/","headline":"Virtualenv for python runtime","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.codefarm.me/2015/08/06/virtualenv/"},"url":"https://blog.codefarm.me/2015/08/06/virtualenv/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css"><!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SN88FJ18E5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-SN88FJ18E5');
+    </script></head>
+  <body>
+    <header class="c-header">
+  <div class="o-container">
+    <a class="c-header-title" href="/">CODE FARM</a>
+    <button class="c-header-nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+      <span class="c-header-nav-toggle-icon"></span>
+    </button>
+    <div class="c-header-nav-wrapper" id="nav-wrapper">
+      <nav class="c-header-nav">
+        <a href="/">Home</a>
+        <a href="/categories/">Category</a>
+        <a href="/tags/">Tag</a>
+        <a href="/archives/">Archive</a>
+        <a href="/about/">About</a>
+        <a href="https://resume.github.io/?looogos" target="_blank">R&eacute;sum&eacute;</a>
+      </nav>
+    </div>
+  </div>
+  
+
+
+
+<div class="o-container">
+  <div class="c-banner">
+    <img src="/assets/images/galaxy.svg" alt="Galaxy background" class="c-banner-bg">
+    <div class="c-banner-quote">
+      <p>"The Renaissance was a time when art, science, and philosophy flourished."</p>
+      <cite>- Michelangelo</cite>
+    </div>
+  </div>
+</div>
+</header>
+
+    <main class="o-container">
+      <article class="c-post">
+  <header class="c-post-header">
+    <h1 class="c-post-title">Virtualenv for python runtime</h1><p class="c-post-meta">06 Aug 2015</p>
+  </header>
+
+  <div class="c-post-content">
+    <p><strong>virtualenv</strong> is a tool to create isolated Python environments.</p>
+
+<p>The basic problem being addressed is one of dependencies and versions, and indirectly permissions. Imagine you have an application that needs version 1 of <em>LibFoo</em>, but another application requires version 2. How can you use both these applications? If you install everything into <em>/usr/lib/python2.7/site-packages</em> (or whatever your platform’s standard location is), it’s easy to end up in a situation where you unintentionally upgrade an application that shouldn’t be upgraded.</p>
+
+<p>Or more generally, what if you want to install an application and leave it be? If an application works, any change in its libraries or the versions of those libraries can break the application.</p>
+
+<p>Also, what if you can’t install packages into the globa <em>site-packages</em> directory? For instance, on a shared host.</p>
+
+<p>In all these cases, <em>virtualenv</em> can help you. It creates an environment that has its own installation directories, that doesn’t share libraries with other virtualenv environments (and optionally doesn’t access the globally installed libraries either).</p>
+
+<ul>
+  <li>
+    <p>installation</p>
+
+    <p>$ sudo pip install virtualenv</p>
+  </li>
+  <li>
+    <p>create isolated env</p>
+
+    <p>$ mkdir diango184</p>
+
+    <p>$ virtualenv django184</p>
+  </li>
+  <li>
+    <p>active virtual env</p>
+
+    <p>$ source django184/bin/active</p>
+  </li>
+  <li>
+    <p>deactive</p>
+
+    <p>$ deactive</p>
+  </li>
+  <li>
+    <p>example</p>
+  </li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>python <span class="nt">-c</span> <span class="s2">"import django; print django.__version__"</span>
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">"&lt;string&gt;"</span>, line 1, <span class="k">in</span> &lt;module&gt;
+ImportError: No module named django
+<span class="nv">$ </span><span class="nb">cd</span> /tmp
+<span class="nv">$ </span><span class="nb">mkdir </span>django184
+<span class="nv">$ </span>virtualenv django184/
+New python executable <span class="k">in</span> /tmp/django184/bin/python
+Installing setuptools, pip, wheel...done.
+<span class="nv">$ </span><span class="nb">source </span>django184/bin/activate
+<span class="o">(</span>django184<span class="o">)</span> <span class="nv">$ </span>pip <span class="nb">install </span><span class="nv">django</span><span class="o">==</span>1.8.4
+Collecting <span class="nv">django</span><span class="o">==</span>1.8.4
+  Using cached https://pypi.mirrors.ustc.edu.cn/packages/py2.py3/D/Django/Django-1.8.4-py2.py3-none-any.whl
+Installing collected packages: django
+Successfully installed django-1.8.4
+You are using pip version 8.0.2, however version 8.1.1 is available.
+You should consider upgrading via the <span class="s1">'pip install --upgrade pip'</span> command.
+<span class="o">(</span>django184<span class="o">)</span> <span class="nv">$ </span>python <span class="nt">-c</span> <span class="s2">"import django; print django.__version__"</span>
+1.8.4
+<span class="o">(</span>django184<span class="o">)</span> <span class="nv">$ </span>deactivate 
+<span class="nv">$ </span>python <span class="nt">-c</span> <span class="s2">"import django; print django.__version__"</span>
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">"&lt;string&gt;"</span>, line 1, <span class="k">in</span> &lt;module&gt;
+ImportError: No module named django
+<span class="nv">$ </span><span class="nb">rm</span> <span class="nt">-rf</span> django184</code></pre></figure>
+
+<hr />
+
+<h4 id="references">References</h4>
+
+<ul>
+  <li><a href="https://virtualenv.pypa.io/">https://virtualenv.pypa.io/</a></li>
+  <li><a href="https://pypi.python.org/pypi?%3Aaction=search&amp;term=django&amp;submit=search">https://pypi.python.org/</a></li>
+</ul>
+
+<style>
+  .utterances {
+      max-width: 100%;
+  }
+</style>
+<script src="https://utteranc.es/client.js"
+        repo="looogos/utterances"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</article>
+    </main>
+    <footer class="c-footer">
+  <div class="c-footer-license">
+    <span>Article licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></span>
+  </div>
+  
+  <details class="c-footer-extralinks" open>
+    <summary class="c-footer-extralinks-summary">Extral Links</summary>
+    <div class="c-footer-extralinks-content">
+      
+      <a href="https://jekyllrb.com/">Jekyll</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://shopify.github.io/liquid/">Liquid</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://docs.asciidoctor.org/">Asciidoctor</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://github.com/qqbuby/">GitHub</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="/feed.xml">RSS</a>
+      
+      
+    </div>
+  </details>
+  
+</footer>
+
+    <script src="/assets/js/nav.js" defer></script>
+    <script src="/assets/js/heading-anchors.js" defer></script>
+    <!-- https://cdn.jsdelivr.net/gh/lurongkai/anti-baidu/js/anti-baidu-latest.min.js -->    
+    <script type="text/javascript" src="/js/anti-baidu.min.js" charset="UTF-8"></script>
+  </body>
+</html>

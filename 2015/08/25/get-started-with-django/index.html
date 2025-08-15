@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Get started with Django | CODE FARM</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Get started with Django" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="1. Project $ python -c &quot;import django; print(django.get_version())&quot; 1.1 Django project structure $ django-admin startproject mysite $ tree . `-- mysite |-- manage.py `-- mysite |-- __init__.py |-- settings.py |-- urls.py `-- wsgi.py 2 directories, 5 files The outer mysite/ root direcotry is just a container for your project. Its name doesn’t matter to Django; you can rename it anything you like. manage.py: A command-line utility that lets you interact with this Django project in various ways. You can read all the details about manage.py in django-admin and manage.py. The inner mysite/ directory is the actual Python package for your project. Its name is the Python package name you’ll need to use to import anything inside it (e.g. mysite.urls). mysite/__init__.py: An empty file that tells Python that this directory should be considered a Python package. mysite/settings.py: Setting/configuration for this Django project. Django settings will tell you about how settings work. mysite/urls.py: The URL declarations for this Django project; a “table of contents” of your Django-powered site. You can read more about URLs in URL dispatcher. mysite/wsgi.py: An entry-point for WSGI-compatible web servers to serve your project. See How to deploy with WSGI for more details. 1.2 Database setup mysite/settings.py, a normal Python module with module-level variables representing Django settings. By default, the configuration uses SQLite. SQLite is included in Python, so you don’t need to install anything else to support your database. If you wish to use another database, install the appropriate database bindings, and change the following keys in the DATABASES ‘default’ item to match your database connection settings: ENGINE – Either ‘django.db.backends.sqlite3’, ‘django.db.backends.postgresql_psycopg2’, ‘django.db.backends.mysql’, or ‘django.db.backends.oracle’. NAME – The name of your database. If you’re using SQLite, the database will be a file on your computer; in that case, NAME should be the full absolute path, including filename, of that file. The default value, os.path.join(BASE_DIR, ‘db.sqlite3’), will store the file in your project directory.If you are not using SQLite as your database, additional settings such as USER, PASSWORD, HOSTmust be added. 1.3 INSTALLED_APPS (settings.py/INSTALLED_APPS) INSTALLED_APPS holds the names of all Django applications that are activated in this Django instance. Apps can be used in multiple projects, and you can package and distribute them for use by others in their projects. By default, INSTALLED_APPS contains the following apps, all of which come with Django: django.contrib.admin – The admin site. django.contrib.auth – An authentication system. django.contrib.contenttypes – A framework for content types. django.contrib.sessions – A session framework. django.contrib.messages – A messaging framework. django.contrib.staticfiles – A framework for managing static files. These applications are included by default as a convenience for the common case. 1.4 migrate command $python manage.py migrate The migrate command looks at the INSTALLED_APPS settings and creates any necessary database tables according to the database settings in your mysite/settings.py file and the database migrations shipped with the app. 1.5 The development server $python manage.py runserver Performing system checks... 0 errors found August 25, 2015 - 15:50:53 Django version 1.8, using settings &#39;mysite.settings&#39; Starting development server at http://127.0.0.1:8000/ Quit the server with CONTROL-C. You’ve started the Django development server, a lightweight Web Server written purely in Python. Changing the port By default, the runserver command starts the development server on the internal IP at port 8000. If you want to change the server’s port, pass it as a command-line argument. For instance, this command start the server on port 8080: $python manage.py runserver 8080 If you want to change the server’s IP, pass it along with the port. So to listen on all public IPs (usefull if you want to show off your work on other computers on your network), use: $python manage.py runserver 0.0.0.0:8000 Automatic reloading of runserver The development server automatically reloads Python code for each request as needed. You don’t need to restart the server for code changes to take effect. However, some actions like adding files don’t trigger a restart, so you’ll have to restart the server in these cases. 2.model 2.1 Creating models Each application you write in Django consists of a Python package that follows a certain convention. Django comes with a utility that automaticlly generates the basic directory structure of an app, so you can focus on writing code rather than creating directories. Projects vs. apps What’s the diffrence between a project and an app? An app is a Web applicaiton that does something – e.g., a Weblog system, a database of public records or a simple poll app. A project is a colleciton of configuration and apps for a particular Web site. A project can certain multiple apps. An app can be in multiple projects. Your app live anywhere on your Python path. To create your app, make sure your’re in the same directory as manage.py and type this command: $ python manage.py startapp polls polls/ __init__.py admin.py migrations/ __init__.py models.py tests.py views.py This directory structure will house the poll application. Philosophy A model is the single, definitive source of truth about your data. It contains the essential fields and behaviors of the data you&#39;re storing. Django follows the DRY principle. The goal is to define your data model in one place and automatically derive things from it. This inlcudes the migrations - unlike in Ruby On Rails, for example, migrations are entirely derived from your models file, and are essentially just a history that Django can roll through to update your database schema to match your current models. polls/models.py from django.db import models class Question(models.Model): question_text = models.CharField(max_length=200) pub_date = models.DateTimeField(&#39;date published&#39;) class Choice(models.Model): question = models.ForeignKey(Question) choice_text = models.CharField(max_lenght=200) votes = models.IntegerField(default=0) The code is straigthforward. Each model is represented by a class that subclasses django.db.models.Model. Each model has a number of class variables, each of which represents a database field in the model. Each field is represented by an instance of a Field class – e.g.,CharField for character fields and DateTimeField for datetimes. This tells Django what type of data each field holds. # The name of each Field instance (e.g. question_text or pub_date) is the field&#39;s name, in machine-friendly format. You&#39;ll use this value in your Python code, and your database will use it as the column name. # Django supports all the common database relationships: many-to-one, many-to-many and one-to-one. 2.2 Activating models That small bit of model code gives Django a lot of information. With it, Django is able to: Create a database schema (CREATE TABLE statements) for this app. Create a Python database-access API for accessing Question and Choice objects. mysite/settings.py INSTALLED_APPS = ( &#39;django.contrib.admin&#39;, &#39;django.contrib.auth&#39;, &#39;django.contrib.contenttypes&#39;, &#39;django.contrib.sessions&#39;, &#39;django.contrib.messages&#39;, &#39;django.contrib.staticfiles&#39;, &#39;polls&#39; ) 2.3 Migrations Migrations are how Django stores changes to your models (and thus your database schema)-they’re just files on disk. You can read the migration for your new model if you like; it’s the file polls/migrations/0001_initial.py. Migrations are very powerfull and let you change your models over time, as you develop your project, without the need to delete your database or tables and make new ones - it specializes in upgrading your database live, without losing data. Change your models (in models.py). Run python manage.py makemigrations to create migrations for those changes. Run python manage.py migrate to apply those changes to the database. The reason that there are seperate commands to make and apply migrations is because you&#39;ll commit migrations to your version control system and ship them with your app; they not only make your development easier, they&#39;re also useable by other developers and in production. Make migrations $python manage.py makemigrations polls Preview migrations $python manage.py sqlmigrate polls 0001 BEGIN; CREATE TABLE &quot;polls_choice&quot; ( &quot;id&quot; serial NOT NULL PRIMARY KEY, &quot;choice_text&quot; varchar(200) NOT NULL, &quot;votes&quot; integer NOT NULL ); CREATE TABLE &quot;polls_question&quot; ( &quot;id&quot; serial NOT NULL PRIMARY KEY, &quot;question_text&quot; varchar(200) NOT NULL, &quot;pub_date&quot; timestamp with time zone NOT NULL ); ALTER TABLE &quot;polls_choice&quot; ADD COLUMN &quot;question_id&quot; integer NOT NULL; ALTER TABLE &quot;polls_choice&quot; ALTER COLUMN &quot;question_id&quot; DROP DEFAULT; CREATE INDEX &quot;polls_choice_7aa0f6ee&quot; ON &quot;polls_choice&quot; (&quot;question_id&quot;); ALTER TABLE &quot;polls_choice&quot; ADD CONSTRAINT &quot;polls_choice_question_id_246c99a640fbbd72_fk_polls_question_id&quot; FOREIGN KEY (&quot;question_id&quot;) REFERENCES &quot;polls_question&quot; (&quot;id&quot;) DEFERRABLE INITIALLY DEFERRED; COMMIT; Apply migrations $python manage.py migrate Operations to perform: Synchronize unmigrated apps: staticfiles, messages Apply all migrations: admin, contenttypes, polls, auth, sessions Synchronizing apps without migrations: Creating tables... Running deferred SQL... Installing custom SQL... Running migrations: Rendering model states... DONE Applying &lt;migration name&gt;... OK The migrate command takes alll the migrations that haven&#39;t been applied (Django tacks whick one are applied using a special table in your database called django_migrations) and run them against your database-essentially, synchronizing the changes you made to your models with the schema in the database. 2.4 Playing with API $python manage.py shell Hop into the interactive Python shell and play around with the free API django gives you. We&#39;re using this instead of simply typing &quot;python&quot;, because manage.py sets the DJANGO_SETTINGS_MODULE environment variable, which gives Django the Python import path to your mysite/settings.py file. Bypassing manage.py If you’d rather not use manage.py, no problem. Just set the DJANGO_SETTINGS_MODULE environment variable to mysite.settings, start a plain Python shell, and set up Django: &gt;&gt;&gt; importdjango &gt;&gt;&gt; django.setup() If this raises an AttributeError, you’re probably using a version of Django that doesn’t match this version. You’ll want to switch to the newer Django version. You must run python from the same directory manage.py is in, or ensure that directory is on the Python path, so that importmysite works. &gt;&gt;&gt; from polls.models import Question,Choice# Import the model classes we just wrote. # No questions are in the system yet. &gt;&gt;&gt; Question.objects.all() [] # Create a new Question. # Support for time zones is enabled in the default settings file, so # Django expects a datetime with tzinfo for pub_date. Use timezone.now() # instead of datetime.datetime.now() and it will do the right thing. &gt;&gt;&gt; fromdjango.utilsimporttimezone &gt;&gt;&gt; q=Question(question_text=&quot;What&#39;s new?&quot;,pub_date=timezone.now()) # Save the object into the database. You have to call save() explicitly. &gt;&gt;&gt; q.save() # Now it has an ID. Note that this might say &quot;1L&quot; instead of &quot;1&quot;, depending # on which database you&#39;re using. That&#39;s no biggie; it just means your # database backend prefers to return integers as Python long integer # objects. &gt;&gt;&gt; q.id 1 # Access model field values via Python attributes. &gt;&gt;&gt; q.question_text &quot;What&#39;s new?&quot; &gt;&gt;&gt; q.pub_date datetime.datetime(2012, 2, 26, 13, 0, 0, 775217, tzinfo=&lt;UTC&gt;) # Change values by changing the attributes, then calling save(). &gt;&gt;&gt; q.question_text=&quot;What&#39;s up?&quot; &gt;&gt;&gt; q.save() # objects.all() displays all the questions in the database. &gt;&gt;&gt; Question.objects.all() [&lt;Question: Question object&gt;] 2.5 str or unicode? On Python 3, it’s easy, just use __str__(). On Python 2, you should define __unicode__() methods returning unicode values instead. Django models have a default __str__() method that calls __unicode__() and converts the result to a UTF-8 bytestring. This means that unicode(p) will return a Unicode string, and str(p) will return a bytestring, with characters encoded as UTF-8. Python does the opposite: object has a __unicode__ method that calls __str__ and interprets the result as an ASCII bytestring. This difference can create confusion. If all of this is gibberish to you, just use Python 3." />
+<meta property="og:description" content="1. Project $ python -c &quot;import django; print(django.get_version())&quot; 1.1 Django project structure $ django-admin startproject mysite $ tree . `-- mysite |-- manage.py `-- mysite |-- __init__.py |-- settings.py |-- urls.py `-- wsgi.py 2 directories, 5 files The outer mysite/ root direcotry is just a container for your project. Its name doesn’t matter to Django; you can rename it anything you like. manage.py: A command-line utility that lets you interact with this Django project in various ways. You can read all the details about manage.py in django-admin and manage.py. The inner mysite/ directory is the actual Python package for your project. Its name is the Python package name you’ll need to use to import anything inside it (e.g. mysite.urls). mysite/__init__.py: An empty file that tells Python that this directory should be considered a Python package. mysite/settings.py: Setting/configuration for this Django project. Django settings will tell you about how settings work. mysite/urls.py: The URL declarations for this Django project; a “table of contents” of your Django-powered site. You can read more about URLs in URL dispatcher. mysite/wsgi.py: An entry-point for WSGI-compatible web servers to serve your project. See How to deploy with WSGI for more details. 1.2 Database setup mysite/settings.py, a normal Python module with module-level variables representing Django settings. By default, the configuration uses SQLite. SQLite is included in Python, so you don’t need to install anything else to support your database. If you wish to use another database, install the appropriate database bindings, and change the following keys in the DATABASES ‘default’ item to match your database connection settings: ENGINE – Either ‘django.db.backends.sqlite3’, ‘django.db.backends.postgresql_psycopg2’, ‘django.db.backends.mysql’, or ‘django.db.backends.oracle’. NAME – The name of your database. If you’re using SQLite, the database will be a file on your computer; in that case, NAME should be the full absolute path, including filename, of that file. The default value, os.path.join(BASE_DIR, ‘db.sqlite3’), will store the file in your project directory.If you are not using SQLite as your database, additional settings such as USER, PASSWORD, HOSTmust be added. 1.3 INSTALLED_APPS (settings.py/INSTALLED_APPS) INSTALLED_APPS holds the names of all Django applications that are activated in this Django instance. Apps can be used in multiple projects, and you can package and distribute them for use by others in their projects. By default, INSTALLED_APPS contains the following apps, all of which come with Django: django.contrib.admin – The admin site. django.contrib.auth – An authentication system. django.contrib.contenttypes – A framework for content types. django.contrib.sessions – A session framework. django.contrib.messages – A messaging framework. django.contrib.staticfiles – A framework for managing static files. These applications are included by default as a convenience for the common case. 1.4 migrate command $python manage.py migrate The migrate command looks at the INSTALLED_APPS settings and creates any necessary database tables according to the database settings in your mysite/settings.py file and the database migrations shipped with the app. 1.5 The development server $python manage.py runserver Performing system checks... 0 errors found August 25, 2015 - 15:50:53 Django version 1.8, using settings &#39;mysite.settings&#39; Starting development server at http://127.0.0.1:8000/ Quit the server with CONTROL-C. You’ve started the Django development server, a lightweight Web Server written purely in Python. Changing the port By default, the runserver command starts the development server on the internal IP at port 8000. If you want to change the server’s port, pass it as a command-line argument. For instance, this command start the server on port 8080: $python manage.py runserver 8080 If you want to change the server’s IP, pass it along with the port. So to listen on all public IPs (usefull if you want to show off your work on other computers on your network), use: $python manage.py runserver 0.0.0.0:8000 Automatic reloading of runserver The development server automatically reloads Python code for each request as needed. You don’t need to restart the server for code changes to take effect. However, some actions like adding files don’t trigger a restart, so you’ll have to restart the server in these cases. 2.model 2.1 Creating models Each application you write in Django consists of a Python package that follows a certain convention. Django comes with a utility that automaticlly generates the basic directory structure of an app, so you can focus on writing code rather than creating directories. Projects vs. apps What’s the diffrence between a project and an app? An app is a Web applicaiton that does something – e.g., a Weblog system, a database of public records or a simple poll app. A project is a colleciton of configuration and apps for a particular Web site. A project can certain multiple apps. An app can be in multiple projects. Your app live anywhere on your Python path. To create your app, make sure your’re in the same directory as manage.py and type this command: $ python manage.py startapp polls polls/ __init__.py admin.py migrations/ __init__.py models.py tests.py views.py This directory structure will house the poll application. Philosophy A model is the single, definitive source of truth about your data. It contains the essential fields and behaviors of the data you&#39;re storing. Django follows the DRY principle. The goal is to define your data model in one place and automatically derive things from it. This inlcudes the migrations - unlike in Ruby On Rails, for example, migrations are entirely derived from your models file, and are essentially just a history that Django can roll through to update your database schema to match your current models. polls/models.py from django.db import models class Question(models.Model): question_text = models.CharField(max_length=200) pub_date = models.DateTimeField(&#39;date published&#39;) class Choice(models.Model): question = models.ForeignKey(Question) choice_text = models.CharField(max_lenght=200) votes = models.IntegerField(default=0) The code is straigthforward. Each model is represented by a class that subclasses django.db.models.Model. Each model has a number of class variables, each of which represents a database field in the model. Each field is represented by an instance of a Field class – e.g.,CharField for character fields and DateTimeField for datetimes. This tells Django what type of data each field holds. # The name of each Field instance (e.g. question_text or pub_date) is the field&#39;s name, in machine-friendly format. You&#39;ll use this value in your Python code, and your database will use it as the column name. # Django supports all the common database relationships: many-to-one, many-to-many and one-to-one. 2.2 Activating models That small bit of model code gives Django a lot of information. With it, Django is able to: Create a database schema (CREATE TABLE statements) for this app. Create a Python database-access API for accessing Question and Choice objects. mysite/settings.py INSTALLED_APPS = ( &#39;django.contrib.admin&#39;, &#39;django.contrib.auth&#39;, &#39;django.contrib.contenttypes&#39;, &#39;django.contrib.sessions&#39;, &#39;django.contrib.messages&#39;, &#39;django.contrib.staticfiles&#39;, &#39;polls&#39; ) 2.3 Migrations Migrations are how Django stores changes to your models (and thus your database schema)-they’re just files on disk. You can read the migration for your new model if you like; it’s the file polls/migrations/0001_initial.py. Migrations are very powerfull and let you change your models over time, as you develop your project, without the need to delete your database or tables and make new ones - it specializes in upgrading your database live, without losing data. Change your models (in models.py). Run python manage.py makemigrations to create migrations for those changes. Run python manage.py migrate to apply those changes to the database. The reason that there are seperate commands to make and apply migrations is because you&#39;ll commit migrations to your version control system and ship them with your app; they not only make your development easier, they&#39;re also useable by other developers and in production. Make migrations $python manage.py makemigrations polls Preview migrations $python manage.py sqlmigrate polls 0001 BEGIN; CREATE TABLE &quot;polls_choice&quot; ( &quot;id&quot; serial NOT NULL PRIMARY KEY, &quot;choice_text&quot; varchar(200) NOT NULL, &quot;votes&quot; integer NOT NULL ); CREATE TABLE &quot;polls_question&quot; ( &quot;id&quot; serial NOT NULL PRIMARY KEY, &quot;question_text&quot; varchar(200) NOT NULL, &quot;pub_date&quot; timestamp with time zone NOT NULL ); ALTER TABLE &quot;polls_choice&quot; ADD COLUMN &quot;question_id&quot; integer NOT NULL; ALTER TABLE &quot;polls_choice&quot; ALTER COLUMN &quot;question_id&quot; DROP DEFAULT; CREATE INDEX &quot;polls_choice_7aa0f6ee&quot; ON &quot;polls_choice&quot; (&quot;question_id&quot;); ALTER TABLE &quot;polls_choice&quot; ADD CONSTRAINT &quot;polls_choice_question_id_246c99a640fbbd72_fk_polls_question_id&quot; FOREIGN KEY (&quot;question_id&quot;) REFERENCES &quot;polls_question&quot; (&quot;id&quot;) DEFERRABLE INITIALLY DEFERRED; COMMIT; Apply migrations $python manage.py migrate Operations to perform: Synchronize unmigrated apps: staticfiles, messages Apply all migrations: admin, contenttypes, polls, auth, sessions Synchronizing apps without migrations: Creating tables... Running deferred SQL... Installing custom SQL... Running migrations: Rendering model states... DONE Applying &lt;migration name&gt;... OK The migrate command takes alll the migrations that haven&#39;t been applied (Django tacks whick one are applied using a special table in your database called django_migrations) and run them against your database-essentially, synchronizing the changes you made to your models with the schema in the database. 2.4 Playing with API $python manage.py shell Hop into the interactive Python shell and play around with the free API django gives you. We&#39;re using this instead of simply typing &quot;python&quot;, because manage.py sets the DJANGO_SETTINGS_MODULE environment variable, which gives Django the Python import path to your mysite/settings.py file. Bypassing manage.py If you’d rather not use manage.py, no problem. Just set the DJANGO_SETTINGS_MODULE environment variable to mysite.settings, start a plain Python shell, and set up Django: &gt;&gt;&gt; importdjango &gt;&gt;&gt; django.setup() If this raises an AttributeError, you’re probably using a version of Django that doesn’t match this version. You’ll want to switch to the newer Django version. You must run python from the same directory manage.py is in, or ensure that directory is on the Python path, so that importmysite works. &gt;&gt;&gt; from polls.models import Question,Choice# Import the model classes we just wrote. # No questions are in the system yet. &gt;&gt;&gt; Question.objects.all() [] # Create a new Question. # Support for time zones is enabled in the default settings file, so # Django expects a datetime with tzinfo for pub_date. Use timezone.now() # instead of datetime.datetime.now() and it will do the right thing. &gt;&gt;&gt; fromdjango.utilsimporttimezone &gt;&gt;&gt; q=Question(question_text=&quot;What&#39;s new?&quot;,pub_date=timezone.now()) # Save the object into the database. You have to call save() explicitly. &gt;&gt;&gt; q.save() # Now it has an ID. Note that this might say &quot;1L&quot; instead of &quot;1&quot;, depending # on which database you&#39;re using. That&#39;s no biggie; it just means your # database backend prefers to return integers as Python long integer # objects. &gt;&gt;&gt; q.id 1 # Access model field values via Python attributes. &gt;&gt;&gt; q.question_text &quot;What&#39;s new?&quot; &gt;&gt;&gt; q.pub_date datetime.datetime(2012, 2, 26, 13, 0, 0, 775217, tzinfo=&lt;UTC&gt;) # Change values by changing the attributes, then calling save(). &gt;&gt;&gt; q.question_text=&quot;What&#39;s up?&quot; &gt;&gt;&gt; q.save() # objects.all() displays all the questions in the database. &gt;&gt;&gt; Question.objects.all() [&lt;Question: Question object&gt;] 2.5 str or unicode? On Python 3, it’s easy, just use __str__(). On Python 2, you should define __unicode__() methods returning unicode values instead. Django models have a default __str__() method that calls __unicode__() and converts the result to a UTF-8 bytestring. This means that unicode(p) will return a Unicode string, and str(p) will return a bytestring, with characters encoded as UTF-8. Python does the opposite: object has a __unicode__ method that calls __str__ and interprets the result as an ASCII bytestring. This difference can create confusion. If all of this is gibberish to you, just use Python 3." />
+<link rel="canonical" href="https://blog.codefarm.me/2015/08/25/get-started-with-django/" />
+<meta property="og:url" content="https://blog.codefarm.me/2015/08/25/get-started-with-django/" />
+<meta property="og:site_name" content="CODE FARM" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-08-25T09:24:02+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Get started with Django" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2015-08-25T09:24:02+08:00","datePublished":"2015-08-25T09:24:02+08:00","description":"1. Project $ python -c &quot;import django; print(django.get_version())&quot; 1.1 Django project structure $ django-admin startproject mysite $ tree . `-- mysite |-- manage.py `-- mysite |-- __init__.py |-- settings.py |-- urls.py `-- wsgi.py 2 directories, 5 files The outer mysite/ root direcotry is just a container for your project. Its name doesn’t matter to Django; you can rename it anything you like. manage.py: A command-line utility that lets you interact with this Django project in various ways. You can read all the details about manage.py in django-admin and manage.py. The inner mysite/ directory is the actual Python package for your project. Its name is the Python package name you’ll need to use to import anything inside it (e.g. mysite.urls). mysite/__init__.py: An empty file that tells Python that this directory should be considered a Python package. mysite/settings.py: Setting/configuration for this Django project. Django settings will tell you about how settings work. mysite/urls.py: The URL declarations for this Django project; a “table of contents” of your Django-powered site. You can read more about URLs in URL dispatcher. mysite/wsgi.py: An entry-point for WSGI-compatible web servers to serve your project. See How to deploy with WSGI for more details. 1.2 Database setup mysite/settings.py, a normal Python module with module-level variables representing Django settings. By default, the configuration uses SQLite. SQLite is included in Python, so you don’t need to install anything else to support your database. If you wish to use another database, install the appropriate database bindings, and change the following keys in the DATABASES ‘default’ item to match your database connection settings: ENGINE – Either ‘django.db.backends.sqlite3’, ‘django.db.backends.postgresql_psycopg2’, ‘django.db.backends.mysql’, or ‘django.db.backends.oracle’. NAME – The name of your database. If you’re using SQLite, the database will be a file on your computer; in that case, NAME should be the full absolute path, including filename, of that file. The default value, os.path.join(BASE_DIR, ‘db.sqlite3’), will store the file in your project directory.If you are not using SQLite as your database, additional settings such as USER, PASSWORD, HOSTmust be added. 1.3 INSTALLED_APPS (settings.py/INSTALLED_APPS) INSTALLED_APPS holds the names of all Django applications that are activated in this Django instance. Apps can be used in multiple projects, and you can package and distribute them for use by others in their projects. By default, INSTALLED_APPS contains the following apps, all of which come with Django: django.contrib.admin – The admin site. django.contrib.auth – An authentication system. django.contrib.contenttypes – A framework for content types. django.contrib.sessions – A session framework. django.contrib.messages – A messaging framework. django.contrib.staticfiles – A framework for managing static files. These applications are included by default as a convenience for the common case. 1.4 migrate command $python manage.py migrate The migrate command looks at the INSTALLED_APPS settings and creates any necessary database tables according to the database settings in your mysite/settings.py file and the database migrations shipped with the app. 1.5 The development server $python manage.py runserver Performing system checks... 0 errors found August 25, 2015 - 15:50:53 Django version 1.8, using settings &#39;mysite.settings&#39; Starting development server at http://127.0.0.1:8000/ Quit the server with CONTROL-C. You’ve started the Django development server, a lightweight Web Server written purely in Python. Changing the port By default, the runserver command starts the development server on the internal IP at port 8000. If you want to change the server’s port, pass it as a command-line argument. For instance, this command start the server on port 8080: $python manage.py runserver 8080 If you want to change the server’s IP, pass it along with the port. So to listen on all public IPs (usefull if you want to show off your work on other computers on your network), use: $python manage.py runserver 0.0.0.0:8000 Automatic reloading of runserver The development server automatically reloads Python code for each request as needed. You don’t need to restart the server for code changes to take effect. However, some actions like adding files don’t trigger a restart, so you’ll have to restart the server in these cases. 2.model 2.1 Creating models Each application you write in Django consists of a Python package that follows a certain convention. Django comes with a utility that automaticlly generates the basic directory structure of an app, so you can focus on writing code rather than creating directories. Projects vs. apps What’s the diffrence between a project and an app? An app is a Web applicaiton that does something – e.g., a Weblog system, a database of public records or a simple poll app. A project is a colleciton of configuration and apps for a particular Web site. A project can certain multiple apps. An app can be in multiple projects. Your app live anywhere on your Python path. To create your app, make sure your’re in the same directory as manage.py and type this command: $ python manage.py startapp polls polls/ __init__.py admin.py migrations/ __init__.py models.py tests.py views.py This directory structure will house the poll application. Philosophy A model is the single, definitive source of truth about your data. It contains the essential fields and behaviors of the data you&#39;re storing. Django follows the DRY principle. The goal is to define your data model in one place and automatically derive things from it. This inlcudes the migrations - unlike in Ruby On Rails, for example, migrations are entirely derived from your models file, and are essentially just a history that Django can roll through to update your database schema to match your current models. polls/models.py from django.db import models class Question(models.Model): question_text = models.CharField(max_length=200) pub_date = models.DateTimeField(&#39;date published&#39;) class Choice(models.Model): question = models.ForeignKey(Question) choice_text = models.CharField(max_lenght=200) votes = models.IntegerField(default=0) The code is straigthforward. Each model is represented by a class that subclasses django.db.models.Model. Each model has a number of class variables, each of which represents a database field in the model. Each field is represented by an instance of a Field class – e.g.,CharField for character fields and DateTimeField for datetimes. This tells Django what type of data each field holds. # The name of each Field instance (e.g. question_text or pub_date) is the field&#39;s name, in machine-friendly format. You&#39;ll use this value in your Python code, and your database will use it as the column name. # Django supports all the common database relationships: many-to-one, many-to-many and one-to-one. 2.2 Activating models That small bit of model code gives Django a lot of information. With it, Django is able to: Create a database schema (CREATE TABLE statements) for this app. Create a Python database-access API for accessing Question and Choice objects. mysite/settings.py INSTALLED_APPS = ( &#39;django.contrib.admin&#39;, &#39;django.contrib.auth&#39;, &#39;django.contrib.contenttypes&#39;, &#39;django.contrib.sessions&#39;, &#39;django.contrib.messages&#39;, &#39;django.contrib.staticfiles&#39;, &#39;polls&#39; ) 2.3 Migrations Migrations are how Django stores changes to your models (and thus your database schema)-they’re just files on disk. You can read the migration for your new model if you like; it’s the file polls/migrations/0001_initial.py. Migrations are very powerfull and let you change your models over time, as you develop your project, without the need to delete your database or tables and make new ones - it specializes in upgrading your database live, without losing data. Change your models (in models.py). Run python manage.py makemigrations to create migrations for those changes. Run python manage.py migrate to apply those changes to the database. The reason that there are seperate commands to make and apply migrations is because you&#39;ll commit migrations to your version control system and ship them with your app; they not only make your development easier, they&#39;re also useable by other developers and in production. Make migrations $python manage.py makemigrations polls Preview migrations $python manage.py sqlmigrate polls 0001 BEGIN; CREATE TABLE &quot;polls_choice&quot; ( &quot;id&quot; serial NOT NULL PRIMARY KEY, &quot;choice_text&quot; varchar(200) NOT NULL, &quot;votes&quot; integer NOT NULL ); CREATE TABLE &quot;polls_question&quot; ( &quot;id&quot; serial NOT NULL PRIMARY KEY, &quot;question_text&quot; varchar(200) NOT NULL, &quot;pub_date&quot; timestamp with time zone NOT NULL ); ALTER TABLE &quot;polls_choice&quot; ADD COLUMN &quot;question_id&quot; integer NOT NULL; ALTER TABLE &quot;polls_choice&quot; ALTER COLUMN &quot;question_id&quot; DROP DEFAULT; CREATE INDEX &quot;polls_choice_7aa0f6ee&quot; ON &quot;polls_choice&quot; (&quot;question_id&quot;); ALTER TABLE &quot;polls_choice&quot; ADD CONSTRAINT &quot;polls_choice_question_id_246c99a640fbbd72_fk_polls_question_id&quot; FOREIGN KEY (&quot;question_id&quot;) REFERENCES &quot;polls_question&quot; (&quot;id&quot;) DEFERRABLE INITIALLY DEFERRED; COMMIT; Apply migrations $python manage.py migrate Operations to perform: Synchronize unmigrated apps: staticfiles, messages Apply all migrations: admin, contenttypes, polls, auth, sessions Synchronizing apps without migrations: Creating tables... Running deferred SQL... Installing custom SQL... Running migrations: Rendering model states... DONE Applying &lt;migration name&gt;... OK The migrate command takes alll the migrations that haven&#39;t been applied (Django tacks whick one are applied using a special table in your database called django_migrations) and run them against your database-essentially, synchronizing the changes you made to your models with the schema in the database. 2.4 Playing with API $python manage.py shell Hop into the interactive Python shell and play around with the free API django gives you. We&#39;re using this instead of simply typing &quot;python&quot;, because manage.py sets the DJANGO_SETTINGS_MODULE environment variable, which gives Django the Python import path to your mysite/settings.py file. Bypassing manage.py If you’d rather not use manage.py, no problem. Just set the DJANGO_SETTINGS_MODULE environment variable to mysite.settings, start a plain Python shell, and set up Django: &gt;&gt;&gt; importdjango &gt;&gt;&gt; django.setup() If this raises an AttributeError, you’re probably using a version of Django that doesn’t match this version. You’ll want to switch to the newer Django version. You must run python from the same directory manage.py is in, or ensure that directory is on the Python path, so that importmysite works. &gt;&gt;&gt; from polls.models import Question,Choice# Import the model classes we just wrote. # No questions are in the system yet. &gt;&gt;&gt; Question.objects.all() [] # Create a new Question. # Support for time zones is enabled in the default settings file, so # Django expects a datetime with tzinfo for pub_date. Use timezone.now() # instead of datetime.datetime.now() and it will do the right thing. &gt;&gt;&gt; fromdjango.utilsimporttimezone &gt;&gt;&gt; q=Question(question_text=&quot;What&#39;s new?&quot;,pub_date=timezone.now()) # Save the object into the database. You have to call save() explicitly. &gt;&gt;&gt; q.save() # Now it has an ID. Note that this might say &quot;1L&quot; instead of &quot;1&quot;, depending # on which database you&#39;re using. That&#39;s no biggie; it just means your # database backend prefers to return integers as Python long integer # objects. &gt;&gt;&gt; q.id 1 # Access model field values via Python attributes. &gt;&gt;&gt; q.question_text &quot;What&#39;s new?&quot; &gt;&gt;&gt; q.pub_date datetime.datetime(2012, 2, 26, 13, 0, 0, 775217, tzinfo=&lt;UTC&gt;) # Change values by changing the attributes, then calling save(). &gt;&gt;&gt; q.question_text=&quot;What&#39;s up?&quot; &gt;&gt;&gt; q.save() # objects.all() displays all the questions in the database. &gt;&gt;&gt; Question.objects.all() [&lt;Question: Question object&gt;] 2.5 str or unicode? On Python 3, it’s easy, just use __str__(). On Python 2, you should define __unicode__() methods returning unicode values instead. Django models have a default __str__() method that calls __unicode__() and converts the result to a UTF-8 bytestring. This means that unicode(p) will return a Unicode string, and str(p) will return a bytestring, with characters encoded as UTF-8. Python does the opposite: object has a __unicode__ method that calls __str__ and interprets the result as an ASCII bytestring. This difference can create confusion. If all of this is gibberish to you, just use Python 3.","headline":"Get started with Django","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.codefarm.me/2015/08/25/get-started-with-django/"},"url":"https://blog.codefarm.me/2015/08/25/get-started-with-django/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css"><!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SN88FJ18E5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-SN88FJ18E5');
+    </script></head>
+  <body>
+    <header class="c-header">
+  <div class="o-container">
+    <a class="c-header-title" href="/">CODE FARM</a>
+    <button class="c-header-nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+      <span class="c-header-nav-toggle-icon"></span>
+    </button>
+    <div class="c-header-nav-wrapper" id="nav-wrapper">
+      <nav class="c-header-nav">
+        <a href="/">Home</a>
+        <a href="/categories/">Category</a>
+        <a href="/tags/">Tag</a>
+        <a href="/archives/">Archive</a>
+        <a href="/about/">About</a>
+        <a href="https://resume.github.io/?looogos" target="_blank">R&eacute;sum&eacute;</a>
+      </nav>
+    </div>
+  </div>
+  
+
+
+
+<div class="o-container">
+  <div class="c-banner">
+    <img src="/assets/images/galaxy.svg" alt="Galaxy background" class="c-banner-bg">
+    <div class="c-banner-quote">
+      <p>"The Renaissance was a time when art, science, and philosophy flourished."</p>
+      <cite>- Michelangelo</cite>
+    </div>
+  </div>
+</div>
+</header>
+
+    <main class="o-container">
+      <article class="c-post">
+  <header class="c-post-header">
+    <h1 class="c-post-title">Get started with Django</h1><p class="c-post-meta">25 Aug 2015</p>
+  </header>
+
+  <div class="c-post-content">
+    <h3 id="1-project">1. Project</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ python -c "import django; print(django.get_version())" 
+</code></pre></div></div>
+
+<p><strong>1.1 Django project structure</strong></p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>django-admin startproject mysite
+<span class="nv">$ </span>tree
+<span class="nb">.</span>
+<span class="sb">`</span><span class="nt">--</span> mysite
+    |-- manage.py
+    <span class="sb">`</span><span class="nt">--</span> mysite
+        |-- __init__.py
+        |-- settings.py
+        |-- urls.py
+        <span class="sb">`</span><span class="nt">--</span> wsgi.py
+
+2 directories, 5 files</code></pre></figure>
+
+<ul>
+  <li>The outer mysite/ root direcotry is just a container for your project. Its name doesn’t matter to Django; you can rename it anything you like.</li>
+  <li><em>manage.py</em>: A command-line utility that lets you interact with this Django project in various ways. You can read all the details about <em>manage.py</em> in <em>django-admin</em> and <em>manage.py</em>.</li>
+  <li>The inner mysite/ directory is the actual Python package for your project. Its name is the Python package name you’ll need to use to import anything inside it (e.g. mysite.urls).</li>
+  <li><em>mysite/__init__.py</em>: An empty file that tells Python that this directory should be considered a Python package.</li>
+  <li><em>mysite/settings.py</em>: Setting/configuration for this Django project. Django settings will tell you about how settings work.</li>
+  <li><em>mysite/urls.py</em>: The URL declarations for this Django project; a “table of contents” of your Django-powered site. You can read more about URLs in URL dispatcher.</li>
+  <li><em>mysite/wsgi.py</em>: An entry-point for WSGI-compatible web servers to serve your project. See How to deploy with WSGI for more details.</li>
+</ul>
+
+<p><strong>1.2 Database setup</strong></p>
+
+<p><em>mysite/settings.py</em>, a normal Python module with module-level variables representing Django settings.</p>
+
+<p>By default, the configuration uses SQLite. SQLite is included in Python, so you don’t need to install anything else to support your database.</p>
+
+<p>If you wish to use another database, install the appropriate database bindings, and change the following keys in the DATABASES ‘default’ item to match your database connection settings:</p>
+
+<ul>
+  <li>ENGINE – Either ‘django.db.backends.sqlite3’, ‘django.db.backends.postgresql_psycopg2’, ‘django.db.backends.mysql’, or ‘django.db.backends.oracle’.</li>
+  <li>NAME – The name of your database. If you’re using SQLite, the database will be a file on your computer; in that case, NAME should be the full absolute path, including filename, of that file. The default value, os.path.join(BASE_DIR, ‘db.sqlite3’), will store the file in your project directory.If you are not using SQLite as your database, additional settings such as USER, PASSWORD, HOSTmust be added.</li>
+</ul>
+
+<p><strong>1.3 INSTALLED_APPS (settings.py/INSTALLED_APPS)</strong></p>
+
+<p>INSTALLED_APPS holds the names of all Django applications that are activated in this Django instance. Apps can be used in multiple projects, and you can package and distribute them for use by others in their projects.</p>
+
+<p>By default, INSTALLED_APPS contains the following apps, all of which come with Django:</p>
+
+<ul>
+  <li>django.contrib.admin – The admin site.</li>
+  <li>django.contrib.auth – An authentication system.</li>
+  <li>django.contrib.contenttypes – A framework for content types.</li>
+  <li>django.contrib.sessions – A session framework.</li>
+  <li>django.contrib.messages – A messaging framework.</li>
+  <li>django.contrib.staticfiles – A framework for managing static files.</li>
+</ul>
+
+<p>These applications are included by default as a convenience for the common case.</p>
+
+<p><strong>1.4 migrate command</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$python manage.py migrate
+</code></pre></div></div>
+
+<p>The migrate command looks at the INSTALLED_APPS settings and creates any necessary database tables according to the database settings in your mysite/settings.py file and the database migrations shipped with the app.</p>
+
+<p><strong>1.5 The development server</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$python manage.py runserver
+
+Performing system checks...
+
+0 errors found
+August 25, 2015 - 15:50:53
+Django version 1.8, using settings 'mysite.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+</code></pre></div></div>
+
+<p>You’ve started the Django development server, a lightweight Web Server written purely in Python.</p>
+
+<p><em>Changing the port</em></p>
+
+<p>By default, the runserver command starts the development server on the internal IP at port 8000.</p>
+
+<p>If you want to change the server’s port, pass it as a command-line argument. For instance, this command start the server on port 8080:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$python manage.py runserver 8080
+</code></pre></div></div>
+
+<p>If you want to change the server’s IP, pass it along with the port. So to listen on all public IPs (usefull if you want to show off your work on other computers on your network), use:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$python manage.py runserver 0.0.0.0:8000
+</code></pre></div></div>
+
+<p><em>Automatic reloading of runserver</em></p>
+
+<p>The development server automatically reloads Python code for each request as needed. You don’t need to restart the server for code changes to take effect. However, some actions like adding files don’t trigger a restart, so you’ll have to restart the server in these cases.</p>
+
+<h3 id="2model">2.model</h3>
+
+<p><strong>2.1 Creating models</strong></p>
+
+<p>Each application you write in Django consists of a Python package that follows a certain convention. Django comes with a utility that automaticlly generates the basic directory structure of an app, so you can focus on writing code rather than creating directories.</p>
+
+<p><em>Projects vs. apps</em></p>
+
+<p>What’s the diffrence between a project and an app? An app is a Web applicaiton that does something – e.g., a Weblog system, a database of public records or a simple poll app. A project is a colleciton of configuration and apps for a particular Web site. A project can certain multiple apps. An app can be in multiple projects.</p>
+
+<p>Your app live anywhere on your Python path.</p>
+
+<p>To create your app, make sure your’re in the same directory as manage.py and type this command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ python manage.py startapp polls
+
+    polls/
+        __init__.py
+        admin.py
+        migrations/
+            __init__.py
+        models.py
+        tests.py
+        views.py
+
+    This directory structure will house the poll application.
+
+Philosophy
+    A model is the single, definitive source of truth about your data. It contains the essential fields and behaviors of the data you're storing. Django follows the DRY principle. The goal is to define your data model in one place and automatically derive things from it.
+    This inlcudes the migrations - unlike in Ruby On Rails, for example, migrations are entirely derived from your models file, and are essentially just a history that Django can roll through to update your database schema to match your current models.
+polls/models.py
+
+    from django.db import models
+
+    class Question(models.Model):
+            question_text = models.CharField(max_length=200)
+            pub_date = models.DateTimeField('date published')
+
+    class Choice(models.Model):
+        question = models.ForeignKey(Question)
+        choice_text = models.CharField(max_lenght=200)
+        votes = models.IntegerField(default=0)
+
+    The code is straigthforward. Each model is represented by a class that subclasses django.db.models.Model. 
+    Each model has a number of class variables, each of which represents a database field in the model.
+    Each field is represented by an instance of a Field class – e.g.,CharField for character fields and DateTimeField for datetimes. This tells Django what type of data each field holds.
+    # The name of each Field instance (e.g. question_text or pub_date) is the field's name, in machine-friendly format. You'll use this value in your Python code, and your database will use it as the column name.
+    # Django supports all the common database relationships: many-to-one, many-to-many and one-to-one. 2.2 Activating models
+That small bit of model code gives Django a lot of information. With it, Django is able to:
+
+    Create a database schema (CREATE TABLE statements) for this app.
+    Create a Python database-access API for accessing Question and Choice objects.
+
+mysite/settings.py
+
+    INSTALLED_APPS = (
+
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'polls'
+
+    )
+</code></pre></div></div>
+
+<p>2.3 Migrations
+    Migrations are how Django stores changes to your models (and thus your database schema)-they’re just files on disk. You can read the migration for your new model if you like; it’s the file polls/migrations/0001_initial.py.
+    Migrations are very powerfull and let you change your models over time, as you develop your project, without the need to delete your database or tables and make new ones - it specializes in upgrading your database live, without losing data.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    Change your models (in models.py).
+    Run python manage.py makemigrations to create migrations for those changes.
+    Run python manage.py migrate to apply those changes to the database.
+
+The reason that there are seperate commands to make and apply migrations is because you'll commit migrations to your version control system and ship them with your app; they not only make your development easier, they're also useable by other developers and in production.
+Make migrations
+    $python manage.py makemigrations polls
+Preview migrations
+    $python manage.py sqlmigrate polls 0001
+
+    BEGIN;
+    CREATE TABLE "polls_choice" (
+        "id" serial NOT NULL PRIMARY KEY,
+        "choice_text" varchar(200) NOT NULL,
+        "votes" integer NOT NULL
+    );
+    CREATE TABLE "polls_question" (
+        "id" serial NOT NULL PRIMARY KEY,
+        "question_text" varchar(200) NOT NULL,
+        "pub_date" timestamp with time zone NOT NULL
+    );
+    ALTER TABLE "polls_choice" ADD COLUMN "question_id" integer NOT NULL;
+    ALTER TABLE "polls_choice" ALTER COLUMN "question_id" DROP DEFAULT;
+    CREATE INDEX "polls_choice_7aa0f6ee" ON "polls_choice" ("question_id");
+    ALTER TABLE "polls_choice"
+      ADD CONSTRAINT "polls_choice_question_id_246c99a640fbbd72_fk_polls_question_id"
+        FOREIGN KEY ("question_id")
+        REFERENCES "polls_question" ("id")
+        DEFERRABLE INITIALLY DEFERRED;
+    COMMIT;
+
+Apply migrations
+    $python manage.py migrate
+
+    Operations to perform:
+      Synchronize unmigrated apps: staticfiles, messages
+      Apply all migrations: admin, contenttypes, polls, auth, sessions
+    Synchronizing apps without migrations:
+      Creating tables...
+        Running deferred SQL...
+      Installing custom SQL...
+    Running migrations:
+      Rendering model states... DONE
+      Applying &lt;migration name&gt;... OK
+
+        The migrate command takes alll the migrations that haven't been applied (Django tacks whick one are applied using a special table in your database called django_migrations) and run them against your database-essentially, synchronizing the changes you made to your models with the schema in the database. 2.4 Playing with API
+$python manage.py shell
+Hop into the interactive Python shell and play around with the free API django gives you.
+We're using this instead of simply typing "python", because manage.py sets the DJANGO_SETTINGS_MODULE environment variable, which gives Django the Python import path to your mysite/settings.py file.
+
+Bypassing manage.py
+
+    If you’d rather not use manage.py, no problem. Just set the DJANGO_SETTINGS_MODULE environment variable to mysite.settings, start a plain Python shell, and set up Django:
+
+&gt;&gt;&gt; importdjango
+&gt;&gt;&gt; django.setup()
+
+    If this raises an AttributeError, you’re probably using a version of Django that doesn’t match this version. You’ll want to switch to the newer Django version.
+
+    You must run python from the same directory manage.py is in, or ensure that directory is on the Python path, so that importmysite works.
+
+&gt;&gt;&gt; from polls.models import Question,Choice# Import the model classes we just wrote.
+# No questions are in the system yet.
+&gt;&gt;&gt; Question.objects.all()
+[]
+# Create a new Question.
+# Support for time zones is enabled in the default settings file, so
+# Django expects a datetime with tzinfo for pub_date. Use timezone.now()
+# instead of datetime.datetime.now() and it will do the right thing.
+&gt;&gt;&gt; fromdjango.utilsimporttimezone
+&gt;&gt;&gt; q=Question(question_text="What's new?",pub_date=timezone.now())
+# Save the object into the database. You have to call save() explicitly.
+&gt;&gt;&gt; q.save()
+# Now it has an ID. Note that this might say "1L" instead of "1", depending
+# on which database you're using. That's no biggie; it just means your
+# database backend prefers to return integers as Python long integer
+# objects.
+&gt;&gt;&gt; q.id
+1
+# Access model field values via Python attributes.
+&gt;&gt;&gt; q.question_text
+"What's new?"
+&gt;&gt;&gt; q.pub_date
+datetime.datetime(2012, 2, 26, 13, 0, 0, 775217, tzinfo=&lt;UTC&gt;)
+# Change values by changing the attributes, then calling save().
+&gt;&gt;&gt; q.question_text="What's up?"
+&gt;&gt;&gt; q.save()
+# objects.all() displays all the questions in the database.
+&gt;&gt;&gt; Question.objects.all()
+[&lt;Question: Question object&gt;]
+</code></pre></div></div>
+
+<p>2.5 <strong>str</strong> or <strong>unicode</strong>?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>On Python 3, it’s easy, just use __str__().
+
+On Python 2, you should define __unicode__() methods returning unicode values instead. Django models have a default __str__() method that calls __unicode__() and converts the result to a UTF-8 bytestring. This means that unicode(p) will return a Unicode string, and str(p) will return a bytestring, with characters encoded as UTF-8. Python does the opposite: object has a __unicode__ method that calls __str__ and interprets the result as an ASCII bytestring. This difference can create confusion.
+
+If all of this is gibberish to you, just use Python 3.
+</code></pre></div></div>
+
+
+<style>
+  .utterances {
+      max-width: 100%;
+  }
+</style>
+<script src="https://utteranc.es/client.js"
+        repo="looogos/utterances"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</article>
+    </main>
+    <footer class="c-footer">
+  <div class="c-footer-license">
+    <span>Article licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></span>
+  </div>
+  
+  <details class="c-footer-extralinks" open>
+    <summary class="c-footer-extralinks-summary">Extral Links</summary>
+    <div class="c-footer-extralinks-content">
+      
+      <a href="https://jekyllrb.com/">Jekyll</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://shopify.github.io/liquid/">Liquid</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://docs.asciidoctor.org/">Asciidoctor</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://github.com/qqbuby/">GitHub</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="/feed.xml">RSS</a>
+      
+      
+    </div>
+  </details>
+  
+</footer>
+
+    <script src="/assets/js/nav.js" defer></script>
+    <script src="/assets/js/heading-anchors.js" defer></script>
+    <!-- https://cdn.jsdelivr.net/gh/lurongkai/anti-baidu/js/anti-baidu-latest.min.js -->    
+    <script type="text/javascript" src="/js/anti-baidu.min.js" charset="UTF-8"></script>
+  </body>
+</html>

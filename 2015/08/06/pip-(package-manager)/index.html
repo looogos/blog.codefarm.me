@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>pip (package manager) | CODE FARM</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="pip (package manager)" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="pip is a package management system used to install and manage software packages written in Python. Many packages can be found in the Python Package Index (PyPI). Python 2.7.9 and later (on the python2 series), and Python 3.4 and later include pip (pip3 for Python 3) by default. pip is a recursive acronym that can stand for either “Pip Installs Packages” or “Pip installs Python”. installation for linux(debian): $ sudo apt-get install python-pip or $ sudo curl -O https://bootstrap.pypa.io/get-pip.py | python basic commands help $ pip –help install $ pip install threadpool   # latest version $ pip install threadpool=1.2.7  # specific version $ pip install threadpool&gt;=1.2.7 # minimum version $ pip install SomePackage-1.0-py2.py3-none-any.whl  # Installing from Wheels uninstall $ pip uninstall threadpool search $ pip search threadpool configuration mirrors On Unix and Mac OS X the configuration file is: $HOME/.pip/pip.conf On Windows, the configuration file is: $HOME\pip\pip.ini pip.conf [global] timeout=60 index-url = https://pypi.mirrors.ustc.edu.cn/simple Note: you can set a custom path location for the config file using the environment variable PIP_CONFIG_FILE. export PIP_CONFIG_FILE=&quot;/etc/pip/pip.ini&quot; References pip documentation pip (package manager) 如何使用科大 mirrors 加速 pip？" />
+<meta property="og:description" content="pip is a package management system used to install and manage software packages written in Python. Many packages can be found in the Python Package Index (PyPI). Python 2.7.9 and later (on the python2 series), and Python 3.4 and later include pip (pip3 for Python 3) by default. pip is a recursive acronym that can stand for either “Pip Installs Packages” or “Pip installs Python”. installation for linux(debian): $ sudo apt-get install python-pip or $ sudo curl -O https://bootstrap.pypa.io/get-pip.py | python basic commands help $ pip –help install $ pip install threadpool   # latest version $ pip install threadpool=1.2.7  # specific version $ pip install threadpool&gt;=1.2.7 # minimum version $ pip install SomePackage-1.0-py2.py3-none-any.whl  # Installing from Wheels uninstall $ pip uninstall threadpool search $ pip search threadpool configuration mirrors On Unix and Mac OS X the configuration file is: $HOME/.pip/pip.conf On Windows, the configuration file is: $HOME\pip\pip.ini pip.conf [global] timeout=60 index-url = https://pypi.mirrors.ustc.edu.cn/simple Note: you can set a custom path location for the config file using the environment variable PIP_CONFIG_FILE. export PIP_CONFIG_FILE=&quot;/etc/pip/pip.ini&quot; References pip documentation pip (package manager) 如何使用科大 mirrors 加速 pip？" />
+<link rel="canonical" href="https://blog.codefarm.me/2015/08/06/pip-(package-manager)/" />
+<meta property="og:url" content="https://blog.codefarm.me/2015/08/06/pip-(package-manager)/" />
+<meta property="og:site_name" content="CODE FARM" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-08-06T21:07:28+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="pip (package manager)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2015-08-06T21:07:28+08:00","datePublished":"2015-08-06T21:07:28+08:00","description":"pip is a package management system used to install and manage software packages written in Python. Many packages can be found in the Python Package Index (PyPI). Python 2.7.9 and later (on the python2 series), and Python 3.4 and later include pip (pip3 for Python 3) by default. pip is a recursive acronym that can stand for either “Pip Installs Packages” or “Pip installs Python”. installation for linux(debian): $ sudo apt-get install python-pip or $ sudo curl -O https://bootstrap.pypa.io/get-pip.py | python basic commands help $ pip –help install $ pip install threadpool   # latest version $ pip install threadpool=1.2.7  # specific version $ pip install threadpool&gt;=1.2.7 # minimum version $ pip install SomePackage-1.0-py2.py3-none-any.whl  # Installing from Wheels uninstall $ pip uninstall threadpool search $ pip search threadpool configuration mirrors On Unix and Mac OS X the configuration file is: $HOME/.pip/pip.conf On Windows, the configuration file is: $HOME\\pip\\pip.ini pip.conf [global] timeout=60 index-url = https://pypi.mirrors.ustc.edu.cn/simple Note: you can set a custom path location for the config file using the environment variable PIP_CONFIG_FILE. export PIP_CONFIG_FILE=&quot;/etc/pip/pip.ini&quot; References pip documentation pip (package manager) 如何使用科大 mirrors 加速 pip？","headline":"pip (package manager)","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.codefarm.me/2015/08/06/pip-(package-manager)/"},"url":"https://blog.codefarm.me/2015/08/06/pip-(package-manager)/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css"><!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SN88FJ18E5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-SN88FJ18E5');
+    </script></head>
+  <body>
+    <header class="c-header">
+  <div class="o-container">
+    <a class="c-header-title" href="/">CODE FARM</a>
+    <button class="c-header-nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+      <span class="c-header-nav-toggle-icon"></span>
+    </button>
+    <div class="c-header-nav-wrapper" id="nav-wrapper">
+      <nav class="c-header-nav">
+        <a href="/">Home</a>
+        <a href="/categories/">Category</a>
+        <a href="/tags/">Tag</a>
+        <a href="/archives/">Archive</a>
+        <a href="/about/">About</a>
+        <a href="https://resume.github.io/?looogos" target="_blank">R&eacute;sum&eacute;</a>
+      </nav>
+    </div>
+  </div>
+  
+
+
+
+<div class="o-container">
+  <div class="c-banner">
+    <img src="/assets/images/galaxy.svg" alt="Galaxy background" class="c-banner-bg">
+    <div class="c-banner-quote">
+      <p>"The Renaissance was a time when art, science, and philosophy flourished."</p>
+      <cite>- Michelangelo</cite>
+    </div>
+  </div>
+</div>
+</header>
+
+    <main class="o-container">
+      <article class="c-post">
+  <header class="c-post-header">
+    <h1 class="c-post-title">pip (package manager)</h1><p class="c-post-meta">06 Aug 2015</p>
+  </header>
+
+  <div class="c-post-content">
+    <p><strong>pip</strong> is a <a href="https://en.wikipedia.org/wiki/Package_manager">package management system</a> used to install and manage <a href="https://en.wikipedia.org/wiki/Package_(package_management_system)">software packages</a> written in <a href="https://en.wikipedia.org/wiki/Python_(programming_language)">Python</a>. Many packages can be found in the <a href="https://en.wikipedia.org/wiki/Python_Package_Index">Python Package Index</a> (PyPI).</p>
+
+<p>Python 2.7.9 and later (on the python2 series), and Python 3.4 and later include pip (pip3 for Python 3) by default.</p>
+
+<p><strong>pip</strong> is a recursive acronym that can stand for either “Pip Installs Packages” or “Pip installs Python”.</p>
+
+<ul>
+  <li>installation</li>
+</ul>
+
+<p>for linux(debian):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo apt-get install python-pip
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo curl -O https://bootstrap.pypa.io/get-pip.py | python
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>basic commands</p>
+
+    <ul>
+      <li>
+        <p>help</p>
+
+        <p>$ pip –help</p>
+      </li>
+      <li>
+        <p>install</p>
+
+        <p>$ pip install threadpool   # latest version</p>
+
+        <p>$ pip install threadpool=1.2.7  # specific version</p>
+
+        <p>$ pip install threadpool&gt;=1.2.7 # minimum version</p>
+
+        <p>$ pip install SomePackage-1.0-py2.py3-none-any.whl  # Installing from Wheels</p>
+      </li>
+      <li>
+        <p>uninstall</p>
+
+        <p>$ pip uninstall threadpool</p>
+      </li>
+      <li>
+        <p>search</p>
+
+        <p>$ pip search threadpool</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>configuration mirrors</p>
+
+    <p>On Unix and Mac OS X the configuration file is: <em>$HOME/.pip/pip.conf</em></p>
+
+    <p>On Windows, the configuration file is: <em>$HOME\pip\pip.ini</em></p>
+
+    <p><em>pip.conf</em></p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  [global]
+  timeout=60
+  index-url = https://pypi.mirrors.ustc.edu.cn/simple
+</code></pre></div>    </div>
+
+    <p><em>Note</em>: you can set a custom path location for the config file using the environment variable <em>PIP_CONFIG_FILE</em>.</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> export PIP_CONFIG_FILE="/etc/pip/pip.ini"
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<hr />
+
+<h3 id="references">References</h3>
+
+<ul>
+  <li><a href="https://pip.pypa.io/">pip documentation</a></li>
+  <li><a href="https://en.wikipedia.org/wiki/Pip_%28package_manager%29">pip (package manager)</a></li>
+  <li><a href="https://lug.ustc.edu.cn/wiki/mirrors/help/pypi">如何使用科大 mirrors 加速 pip？</a></li>
+</ul>
+
+<style>
+  .utterances {
+      max-width: 100%;
+  }
+</style>
+<script src="https://utteranc.es/client.js"
+        repo="looogos/utterances"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+</article>
+    </main>
+    <footer class="c-footer">
+  <div class="c-footer-license">
+    <span>Article licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></span>
+  </div>
+  
+  <details class="c-footer-extralinks" open>
+    <summary class="c-footer-extralinks-summary">Extral Links</summary>
+    <div class="c-footer-extralinks-content">
+      
+      <a href="https://jekyllrb.com/">Jekyll</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://shopify.github.io/liquid/">Liquid</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://docs.asciidoctor.org/">Asciidoctor</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="https://github.com/qqbuby/">GitHub</a>
+      
+      &nbsp;.&nbsp;
+      
+      
+      <a href="/feed.xml">RSS</a>
+      
+      
+    </div>
+  </details>
+  
+</footer>
+
+    <script src="/assets/js/nav.js" defer></script>
+    <script src="/assets/js/heading-anchors.js" defer></script>
+    <!-- https://cdn.jsdelivr.net/gh/lurongkai/anti-baidu/js/anti-baidu-latest.min.js -->    
+    <script type="text/javascript" src="/js/anti-baidu.min.js" charset="UTF-8"></script>
+  </body>
+</html>
